@@ -243,5 +243,19 @@
      50vw min-height that would otherwise force it taller) */
   .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide {
     min-height: 0;
+    justify-content: flex-start; /* pin text box to the top, like the source */
+  }
+
+  /* Text box: top-left with the source's 44px inset (source padding
+     44px 24px 0 44px on a transparent box). We use a soft gradient panel
+     instead of a hard box so text stays legible over the full-bleed DM
+     photo, which — unlike the source art — has no flat colour region. */
+  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide .carousel-promo-slide-content {
+    margin: 0;
+    padding: 44px 24px 24px 44px;
+    background-color: transparent;
+    background-image: linear-gradient(105deg, rgb(0 0 0 / 55%) 40%, rgb(0 0 0 / 0%));
+    width: 60%;
+    min-width: 320px;
   }
 }
