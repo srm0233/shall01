@@ -165,18 +165,20 @@
   gap: var(--space-m, 16px);
 }
 
-/* Promo rail: stacked image cards on the right */
+/* Promo rail: image cards (side-by-side on mobile, stacked on desktop) */
 .carousel-promo .carousel-promo-rail {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-m, 16px);
 }
 
+/* Cards keep the source's 342:249 image proportion (≈1.37:1) rather than
+   stretching to fill, so their height matches albertsons.com precisely. */
 .carousel-promo .carousel-promo-card {
   position: relative;
   display: flex;
   align-items: flex-end;
-  min-height: 160px;
+  aspect-ratio: 342 / 249;
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
@@ -219,24 +221,27 @@
 }
 
 @media (width >= 900px) {
-  /* carousel ~2/3, rail ~1/3 */
+  /* carousel ~2/3, rail ~1/3; rail height drives the shared row */
   .carousel-promo .carousel-promo-bento.has-rail {
     grid-template-columns: 2fr 1fr;
     align-items: stretch;
   }
 
-  /* rail stacks vertically beside the carousel */
+  /* rail stacks its two cards vertically beside the carousel */
   .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-rail {
     grid-template-columns: 1fr;
   }
 
-  /* let carousel/rail fill the shared row height */
+  /* two stacked aspect-ratio cards + gap set the rail height; the carousel
+     stretches to match so both columns are exactly the same height. */
   .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slides-container,
   .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide {
     height: 100%;
   }
 
+  /* let the carousel be as short as the rail defines (override the intrinsic
+     50vw min-height that would otherwise force it taller) */
   .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide {
-    min-height: 420px;
+    min-height: 0;
   }
 }
