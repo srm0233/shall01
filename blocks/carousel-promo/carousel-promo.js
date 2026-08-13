@@ -99,59 +99,110 @@ function createSlide(row, slideIndex, carouselId) {
   return slide;
 }
 
+/* Promo rail card: image cell + content cell, whole card links to its CTA. */
+function createPromoCard(row) {
+  const card = document.createElement('div');
+  card.classList.add('carousel-promo-card');
+  const cols = row.querySelectorAll(':scope > div');
+  cols.forEach((column, colIdx) => {
+    column.classList.add(`carousel-promo-card-${colIdx === 0 ? 'image' : 'content'}`);
+    card.append(column);
+  });
+  // If the card content has a single CTA link, make the whole card clickable.
+  const cta = card.querySelector('.carousel-promo-card-content a[href]');
+  if (cta) card.dataset.href = cta.getAttribute('href');
+  return card;
+}
+
+/* A row is a promo rail card when its content column leads with an h3 (the
+   import models rail cards as h3 + CTA); hero slides lead with h2. */
+function isPromoRow(row) {
+  return !!row.querySelector(':scope > div h3');
+}
+
 let carouselId = 0;
 export default async function decorate(block) {
   carouselId += 1;
   block.setAttribute('id', `carousel-promo-${carouselId}`);
-  const rows = block.querySelectorAll(':scope > div');
-  const isSingleSlide = rows.length < 2;
+  const allRows = [...block.querySelectorAll(':scope > div')];
+  const heroRows = allRows.filter((r) => !isPromoRow(r));
+  const promoRows = allRows.filter(isPromoRow);
+  // Fallback: if partitioning found no hero rows, treat everything as hero.
+  const slidesRows = heroRows.length ? heroRows : allRows;
+  const railRows = heroRows.length ? promoRows : [];
+  const isSingleSlide = slidesRows.length < 2;
 
   block.setAttribute('role', 'region');
   block.setAttribute('aria-roledescription', placeholders.carousel || 'Carousel');
+
+  // Bento grid: carousel (left) + promo rail (right, when rail cards exist).
+  const bento = document.createElement('div');
+  bento.classList.add('carousel-promo-bento');
+  if (railRows.length) bento.classList.add('has-rail');
 
   const container = document.createElement('div');
   container.classList.add('carousel-promo-slides-container');
 
   const slidesWrapper = document.createElement('ul');
   slidesWrapper.classList.add('carousel-promo-slides');
-  block.prepend(slidesWrapper);
 
   let slideIndicators;
   if (!isSingleSlide) {
-    const slideIndicatorsNav = document.createElement('nav');
-    slideIndicatorsNav.setAttribute('aria-label', placeholders.carouselSlideControls || 'Carousel Slide Controls');
-    slideIndicators = document.createElement('ol');
-    slideIndicators.classList.add('carousel-promo-slide-indicators');
-    slideIndicatorsNav.append(slideIndicators);
-    block.append(slideIndicatorsNav);
-
     const slideNavButtons = document.createElement('div');
     slideNavButtons.classList.add('carousel-promo-navigation-buttons');
     slideNavButtons.innerHTML = `
       <button type="button" class= "slide-prev" aria-label="${placeholders.previousSlide || 'Previous Slide'}"></button>
       <button type="button" class="slide-next" aria-label="${placeholders.nextSlide || 'Next Slide'}"></button>
     `;
-
     container.append(slideNavButtons);
   }
 
-  rows.forEach((row, idx) => {
+  slidesRows.forEach((row, idx) => {
     const slide = createSlide(row, idx, carouselId);
     moveInstrumentation(row, slide);
     slidesWrapper.append(slide);
-
-    if (slideIndicators) {
-      const indicator = document.createElement('li');
-      indicator.classList.add('carousel-promo-slide-indicator');
-      indicator.dataset.targetSlide = idx;
-      indicator.innerHTML = `<button type="button" aria-label="${placeholders.showSlide || 'Show Slide'} ${idx + 1} ${placeholders.of || 'of'} ${rows.length}"></button>`;
-      slideIndicators.append(indicator);
-    }
     row.remove();
   });
 
   container.append(slidesWrapper);
-  block.prepend(container);
+
+  if (!isSingleSlide) {
+    const slideIndicatorsNav = document.createElement('nav');
+    slideIndicatorsNav.setAttribute('aria-label', placeholders.carouselSlideControls || 'Carousel Slide Controls');
+    slideIndicators = document.createElement('ol');
+    slideIndicators.classList.add('carousel-promo-slide-indicators');
+    slideIndicatorsNav.append(slideIndicators);
+    slidesRows.forEach((row, idx) => {
+      const indicator = document.createElement('li');
+      indicator.classList.add('carousel-promo-slide-indicator');
+      indicator.dataset.targetSlide = idx;
+      indicator.innerHTML = `<button type="button" aria-label="${placeholders.showSlide || 'Show Slide'} ${idx + 1} ${placeholders.of || 'of'} ${slidesRows.length}"></button>`;
+      slideIndicators.append(indicator);
+    });
+    container.append(slideIndicatorsNav);
+  }
+
+  bento.append(container);
+
+  if (railRows.length) {
+    const rail = document.createElement('div');
+    rail.classList.add('carousel-promo-rail');
+    railRows.forEach((row) => {
+      const card = createPromoCard(row);
+      moveInstrumentation(row, card);
+      rail.append(card);
+      row.remove();
+    });
+    // Delegate clicks on a card to its CTA link.
+    rail.addEventListener('click', (e) => {
+      if (e.target.closest('a')) return;
+      const card = e.target.closest('.carousel-promo-card[data-href]');
+      if (card) window.location.assign(card.dataset.href);
+    });
+    bento.append(rail);
+  }
+
+  block.prepend(bento);
 
   if (!isSingleSlide) {
     bindEvents(block);

@@ -1,5 +1,7 @@
 .carousel-promo .carousel-promo-slides-container {
   position: relative;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .carousel-promo .carousel-promo-slides,
@@ -149,5 +151,92 @@
 
   .carousel-promo .carousel-promo-slide .carousel-promo-slide-content[data-align='justify'] {
     --slide-content-width: auto;
+  }
+}
+
+/* ==========================================================================
+   Bento grid: rotating hero carousel (left) + stacked promo rail (right),
+   matching albertsons.com. Stacks to a single column on mobile.
+   ========================================================================== */
+
+.carousel-promo .carousel-promo-bento {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-m, 16px);
+}
+
+/* Promo rail: stacked image cards on the right */
+.carousel-promo .carousel-promo-rail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-m, 16px);
+}
+
+.carousel-promo .carousel-promo-card {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 160px;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  isolation: isolate;
+}
+
+.carousel-promo .carousel-promo-card-image {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+/* stylelint-disable no-descending-specificity -- bento rules intentionally follow slide rules */
+.carousel-promo .carousel-promo-card-image picture,
+.carousel-promo .carousel-promo-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* stylelint-enable no-descending-specificity */
+
+.carousel-promo .carousel-promo-card-content {
+  padding: var(--space-m, 16px);
+  color: #fff;
+  width: 100%;
+  background: linear-gradient(0deg, rgb(0 0 0 / 55%), rgb(0 0 0 / 0%));
+}
+
+.carousel-promo .carousel-promo-card-content h3 {
+  margin: 0 0 var(--space-xs, 4px);
+  font-family: var(--heading-font-family);
+  color: #fff;
+}
+
+.carousel-promo .carousel-promo-card-content a:any-link {
+  color: #fff;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+@media (width >= 900px) {
+  /* carousel ~2/3, rail ~1/3 */
+  .carousel-promo .carousel-promo-bento.has-rail {
+    grid-template-columns: 2fr 1fr;
+    align-items: stretch;
+  }
+
+  /* rail stacks vertically beside the carousel */
+  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-rail {
+    grid-template-columns: 1fr;
+  }
+
+  /* let carousel/rail fill the shared row height */
+  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slides-container,
+  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide {
+    height: 100%;
+  }
+
+  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide {
+    min-height: 420px;
   }
 }

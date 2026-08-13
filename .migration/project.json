@@ -1,10 +1,10 @@
 {
-  "type": "xwalk",
+  "type": "da",
   "sites": {
     "shall01": {
       "previewOrg": "srm0233",
       "previewSite": "shall01",
-      "libraryUrl": "https://main--sta-xwalk-boilerplate--aemysites.aem.page/tools/sidekick/library.json"
+      "libraryUrl": "https://main--shall01--srm0233.aem.page/docs/library/blocks.json"
     }
   }
 }
