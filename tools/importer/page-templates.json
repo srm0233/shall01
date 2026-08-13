@@ -1,0 +1,55 @@
+{
+  "metadata": {
+    "projectType": "xwalk"
+  },
+  "templates": [
+    {
+      "name": "homepage",
+      "urls": [
+        "https://www.albertsons.com/"
+      ],
+      "coverageGaps": [],
+      "description": "Albertsons grocery homepage: multi-tier header (utility nav, banner nav with logo/store-locator/search/account/cart, category nav), hero promotional carousel, featured items / sponsored product carousels, and a rich multi-column footer with quick links, company info, policies, and social connect.",
+      "blocks": [
+        {
+          "name": "carousel-promo",
+          "instances": [
+            "body > main.main-wrapper > div.full-bleed-container > div.full-bleed-row > div.marker-component:nth-of-type(1)"
+          ]
+        },
+        {
+          "name": "cards-product",
+          "instances": [
+            "body > main.main-wrapper > div.full-bleed-container > div.full-bleed-row > div.master-product-carousel.section.static-carousel"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "rc-hero",
+          "name": "section-hero",
+          "selector": [
+            "body > main.main-wrapper > div.full-bleed-container > div.full-bleed-row > div.marker-component:nth-of-type(1)"
+          ],
+          "style": null,
+          "blocks": [
+            "carousel-promo"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "rc-featured",
+          "name": "section-featured",
+          "selector": [
+            "body > main.main-wrapper > div.full-bleed-container > div.full-bleed-row > div.master-product-carousel.section.static-carousel"
+          ],
+          "style": "grey",
+          "blocks": [
+            "cards-product"
+          ],
+          "defaultContent": []
+        }
+      ]
+    }
+  ]
+}

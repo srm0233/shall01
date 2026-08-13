@@ -17,3 +17,7 @@ helix-importer-ui
 !AGENTS.md
 tasks/lessons.md
 tasks/todo.md
+
+# migration scratch artifacts (large: cleaned HTML, screenshots, downloaded images)
+migration-work/
+tools/importer/*.bundle.js

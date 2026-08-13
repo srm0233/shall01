@@ -9,8 +9,8 @@ header {
   /* typography: brand (strongest) > primary nav > dropdown headings > dropdown items */
   --nav-brand-size: 1.7rem;
   --nav-brand-weight: 700;
-  --nav-primary-size: 0.8rem;
-  --nav-primary-weight: 700;
+  --nav-primary-size: 0.95rem;
+  --nav-primary-weight: 600;
   --nav-heading-size: var(--body-font-size-s);
   --nav-heading-weight: 700;
   --nav-item-size: var(--body-font-size-s);
@@ -34,9 +34,9 @@ header {
   --nav-bg-mega: light-dark(var(--color-parchment), var(--color-obsidian));
   --nav-bg-hover-item: light-dark(var(--light-color), var(--color-card-dark));
 
-  /* header uses neutral hover color */
-  --nav-hover-color: light-dark(var(--color-rust), var(--color-gold));
-  --nav-focus-color: light-dark(var(--color-rust), var(--color-gold));
+  /* header uses brand-blue hover color */
+  --nav-hover-color: var(--brand-blue);
+  --nav-focus-color: var(--brand-blue);
 
   /* desktop-only (overridden in @media 900px) */
   --nav-desktop-max-width: 1264px;
@@ -50,14 +50,14 @@ header {
 }
 
 header .nav-wrapper {
-  background-color: light-dark(#faf8f5, var(--color-obsidian));
+  background-color: #fff;
   width: 100%;
   z-index: 1000;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  border-bottom: var(--border-heritage);
+  border-bottom: 1px solid var(--brand-border);
   box-shadow: none;
 }
 
@@ -210,8 +210,8 @@ header nav .nav-brand .icon.icon-logo {
   }
 
 header nav .nav-brand :is(img, svg) {
-  width: min(200px, 42vw);
-  height: 45px;
+  width: auto;
+  height: 36px;
   object-fit: contain;
 }
 
@@ -234,9 +234,10 @@ header nav .nav-sections ul {
   list-style: none;
   padding: 0;
   margin: 0;
+  font-family: var(--heading-font-family);
   font-size: var(--nav-primary-size);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 @media (width <= 899px) {
@@ -516,9 +517,10 @@ header nav .nav-sections button.button {
   color: var(--text-color);
   padding: 0;
   min-width: 0;
+  font-family: var(--heading-font-family);
   font-weight: var(--nav-primary-weight);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 header nav .nav-sections a.button:any-link:hover,
@@ -533,16 +535,28 @@ header nav .nav-sections button.button:focus-visible {
 
 /* CTA button in header tools */
 header nav .nav-tools a.button:any-link:not(.nav-tool) {
-  border: 1.5px solid var(--color-rust);
-  border-radius: 4px;
+  border: 0;
+  border-radius: 0;
   background: transparent;
-  color: var(--color-rust);
-  padding: 12px 24px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  transition: all 0.3s;
+  color: var(--brand-ink);
+  padding: 0;
+  font-size: var(--body-font-size-s);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: normal;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+/* hide the demo auto-injected auth (Login → demo origin); Albertsons uses the
+   authored "Sign in" account link instead. High specificity to override the
+   heritage .nav-tools a.button.nav-auth-link rules. */
+header nav .nav-tools a.button.nav-auth-link.nav-auth-desktop:any-link,
+header nav .nav-sections .default-content-wrapper > ul > li.nav-auth-mobile-item {
+  display: none;
 }
 
 header nav .nav-tools a.button.nav-auth-link:any-link {
@@ -579,8 +593,8 @@ header nav .nav-sections .default-content-wrapper > ul > li.nav-auth-mobile-item
 }
 
 header nav .nav-tools a.button:any-link:not(.nav-tool):hover {
-  background: var(--color-rust);
-  color: var(--color-light);
+  background: transparent;
+  color: var(--brand-blue);
   transform: none;
   box-shadow: none;
 }
@@ -617,10 +631,10 @@ header nav .nav-tools .nav-search-form {
 
 header nav .nav-tools .nav-search-input {
   width: 120px;
-  border: 1px solid light-dark(rgb(0 0 0 / 14%), rgb(255 255 255 / 20%));
+  border: 1.5px solid var(--brand-border);
   border-radius: 999px;
   padding: var(--nav-gap) 38px var(--nav-gap) var(--nav-padding);
-  background-color: transparent;
+  background-color: #fff;
   color: inherit;
   font: inherit;
   font-size: var(--body-font-size-s);
@@ -635,8 +649,8 @@ header nav .nav-tools .nav-search-input::placeholder {
 
 header nav .nav-tools .nav-search-input:focus-visible {
   outline: none;
-  border-color: var(--nav-focus-color);
-  box-shadow: 0 0 0 2px light-dark(rgb(0 0 0 / 8%), rgb(255 255 255 / 12%));
+  border-color: var(--brand-blue);
+  box-shadow: 0 0 0 2px rgb(0 68 136 / 15%);
 }
 
 header nav .nav-tools .nav-tool {
@@ -684,9 +698,10 @@ header nav .nav-tools .nav-tool:focus-visible {
   outline-offset: 2px;
 }
 
-header nav .nav-tools .icon img {
-  width: 18px;
-  height: 18px;
+header nav .nav-tools .icon img,
+header nav .nav-tools .icon svg {
+  width: 22px;
+  height: 22px;
 }
 
 :where(body.dark-scheme, body.dark, body.theme-dark) header nav .nav-tools .icon img {

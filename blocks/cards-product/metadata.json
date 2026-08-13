@@ -1,0 +1,39 @@
+{
+  "variantName": "cards-product",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-08-12T22:25:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.albertsons.com/",
+    "originPage": "Albertsons grocery homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "compact",
+    "purpose": "product",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "image + title + price + CTA",
+    "buttonCount": 1,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "product listing rails / grids",
+      "featured items and sponsored product carousels",
+      "grocery / e-commerce card grids with image + title + price + CTA"
+    ],
+    "notSuitableFor": [
+      "full-bleed hero banners (use carousel-promo or hero)",
+      "long-form editorial content",
+      "single feature highlight"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-08-12T22:25:00.000Z"
+  }
+}

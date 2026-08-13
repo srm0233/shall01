@@ -1,0 +1,39 @@
+{
+  "variantName": "carousel-promo",
+  "baseBlock": "carousel",
+  "version": "1.0.0",
+  "created": "2026-08-12T22:25:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.albertsons.com/",
+    "originPage": "Albertsons grocery homepage",
+    "blockPosition": "top"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "wide",
+    "purpose": "promo-hero",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "image + heading + subheading + CTA",
+    "buttonCount": 1,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "homepage promotional hero carousels",
+      "full-bleed rotating banner regions",
+      "landing pages with multiple image slides each carrying heading + CTA"
+    ],
+    "notSuitableFor": [
+      "single static hero banners (use hero block)",
+      "product listing rails (use cards-product)",
+      "text-only content without background images"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-08-12T22:25:00.000Z"
+  }
+}

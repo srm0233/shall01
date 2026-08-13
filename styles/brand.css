@@ -1,0 +1,38 @@
+/*
+ * brand.css — Albertsons brand design tokens.
+ * Extracted from https://www.albertsons.com/ (heading: Poppins, body: Nunito Sans).
+ * Imported first by styles.css so these values seed the global design system.
+ */
+
+:root {
+  /* typography */
+  --heading-font-family: "Poppins", "Helvetica Neue", helvetica, arial, sans-serif;
+  --body-font-family: "Nunito Sans", "Helvetica Neue", helvetica, arial, sans-serif;
+  --fixed-font-family: "Roboto Mono", menlo, consolas, "Liberation Mono", monospace;
+
+  /* brand color palette */
+  --brand-blue: #04a; /* #004488 – primary CTA / link */
+  --brand-blue-dark: #036; /* #003366 – hover */
+  --brand-ink: #2a2928; /* warm near-black body text */
+  --brand-dark-chrome: #1f1e1e; /* utility bar / dark chrome */
+  --brand-grey-bg: #faf9f8; /* subtle off-white band */
+  --brand-section-grey: #f2f2f2; /* light-grey featured band */
+  --brand-border: #e2e2e2;
+
+  /* semantic colors */
+  --background-color: #fff;
+  --text-color: var(--brand-ink);
+  --link-color: var(--brand-blue);
+  --link-hover-color: var(--brand-blue-dark);
+
+  /* spacing / layout */
+  --nav-height: 64px;
+
+  /* heading sizes (desktop) */
+  --heading-size-xxl: 44px;
+  --heading-size-xl: 36px;
+  --heading-size-l: 28px;
+  --heading-size-m: 22px;
+  --heading-size-s: 18px;
+  --heading-size-xs: 16px;
+}
