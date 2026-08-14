@@ -218,7 +218,6 @@ function buildCarousel(block) {
       try { moveInstrumentation(group[0], card); } catch (e) { /* instrumentation optional */ }
       ul.append(card);
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error('cards-product: failed to build a card', e);
     }
   });
