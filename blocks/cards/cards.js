@@ -183,6 +183,70 @@ function decorateDefault(block) {
 }
 
 /**
+ * Decorate the "category" variant: the Albertsons "Shop by category" tile grid.
+ * Authored as a normal cards block — an optional first row holding the heading,
+ * then one row per category whose cells contain the tile image and a label link.
+ */
+function decorateCategory(block) {
+  const rows = [...block.children];
+
+  let headingRow = null;
+  if (rows[0] && !rows[0].querySelector('picture, img, a[href*="/is/image/"]')) {
+    headingRow = rows.shift();
+  }
+
+  const ul = createTag('ul', { class: 'cards-category-track' });
+  rows.forEach((row) => {
+    const cells = [...row.children];
+    if (cells.length < 2) return;
+    const [imageCell, bodyCell] = cells;
+
+    // The image cell holds either a <picture>/<img> (already converted by the
+    // DM auto-block) or a bare Scene7 anchor (if this block ran first). The
+    // body cell holds the navigation link whose text is the category label.
+    const labelLink = bodyCell.querySelector('a[href]');
+    if (!labelLink) return;
+    const label = (labelLink.textContent || '').trim();
+    const href = labelLink.getAttribute('href');
+
+    const li = createTag('li', { class: 'cards-category-tile' });
+    const link = createTag('a', { class: 'cards-category-link', href });
+    const imageWrap = createTag('span', { class: 'cards-category-image' });
+
+    let picture = imageCell.querySelector('picture');
+    if (picture) {
+      imageWrap.append(picture);
+    } else {
+      const imgAnchor = imageCell.querySelector('a[href*="/is/image/"]');
+      const img = imageCell.querySelector('img');
+      const src = imgAnchor ? imgAnchor.getAttribute('href') : (img && img.getAttribute('src'));
+      if (src) {
+        picture = createOptimizedPicture(src, label, false, [{ width: '400' }]);
+        imageWrap.append(picture);
+      }
+    }
+
+    link.append(imageWrap);
+    link.append(createTag('span', { class: 'cards-category-label' }, label));
+    li.append(link);
+    ul.append(li);
+  });
+
+  block.replaceChildren();
+  if (headingRow) {
+    const head = createTag('div', { class: 'cards-category-header' });
+    while (headingRow.firstChild) head.append(headingRow.firstChild);
+    const only = head.firstElementChild;
+    if (head.children.length === 1 && only && only.tagName === 'DIV') {
+      while (only.firstChild) head.append(only.firstChild);
+      only.remove();
+    }
+    block.append(head);
+  }
+  block.append(ul);
+}
+
+/**
  * Decorate the "product" variant: an Albertsons-style horizontal product
  * carousel. Authored as a normal cards block — an optional first row holding a
  * heading + "View all" link, then one row per product whose cells contain the
@@ -253,7 +317,14 @@ function decorateProduct(block) {
     if (approx) body.append(createTag('p', { class: 'cards-product-approx' }, approx));
     if (priceHTML) {
       const price = createTag('p', { class: 'cards-product-price' });
-      price.innerHTML = priceHTML.replace(/your price/i, '').replace(/original price/ig, '');
+      // The source repeats each value twice (an a11y copy + a visible copy),
+      // e.g. "Your Price $2.50 $2.50Original Price $4.49 $4.49". Strip the
+      // "Your/Original Price" labels, then collapse the duplicated amount.
+      price.innerHTML = priceHTML
+        .replace(/your price/ig, '')
+        .replace(/original price/ig, '')
+        .replace(/(\$\d[\d.,]*)\s+\1(?!\d)/g, '$1')
+        .trim();
       body.append(price);
     }
     body.append(createTag('a', { class: 'cards-product-title', href }, title));
@@ -309,6 +380,8 @@ export default async function decorate(block) {
     decorateBento(block);
   } else if (block.classList.contains('product')) {
     decorateProduct(block);
+  } else if (block.classList.contains('category')) {
+    decorateCategory(block);
   } else {
     decorateDefault(block);
   }

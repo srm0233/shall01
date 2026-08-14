@@ -336,7 +336,8 @@
 .cards.product .cards-card-image :is(img, picture) {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
   display: block;
 }
 
@@ -453,4 +454,103 @@
 
 @media (width >= 900px) {
   .cards.product .cards-card { width: 240px; }
+}
+
+/* ==========================================================================
+   "category" variant: Albertsons "Shop by category" tile grid. Round image
+   tiles with a label beneath, wrapping responsively.
+   ========================================================================== */
+
+.cards.category {
+  display: block;
+  max-width: none;
+}
+
+.cards.category .cards-category-header h2 {
+  margin: 0 0 var(--space-m, 16px);
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  color: var(--brand-ink, #2a2928);
+}
+
+.cards.category .cards-category-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-m, 16px) var(--space-s, 8px);
+  max-width: none;
+}
+
+.cards.category .cards-category-tile {
+  border: 0;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.cards.category .cards-category-tile:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.cards.category .cards-category-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-s, 8px);
+  text-align: center;
+  color: var(--brand-ink, #2a2928);
+  text-decoration: none;
+}
+
+.cards.category .cards-category-image {
+  display: block;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--brand-section-grey, #f2f2f2);
+}
+
+.cards.category .cards-category-image :is(img, picture) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.cards.category .cards-category-link:hover .cards-category-image {
+  box-shadow: 0 0 0 2px var(--brand-blue, #04a);
+}
+
+.cards.category .cards-category-label {
+  font-size: var(--body-font-size-s, 14px);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.cards.category .cards-category-link:hover .cards-category-label {
+  color: var(--brand-blue, #04a);
+}
+
+@media (width >= 600px) {
+  .cards.category .cards-category-track {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .cards.category .cards-category-image {
+    width: 112px;
+    height: 112px;
+  }
+}
+
+@media (width >= 900px) {
+  .cards.category .cards-category-track {
+    grid-template-columns: repeat(8, 1fr);
+  }
 }
