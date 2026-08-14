@@ -172,23 +172,33 @@
   gap: var(--space-m, 16px);
 }
 
-/* Cards keep the source's 342:249 image proportion (≈1.37:1) rather than
-   stretching to fill, so their height matches albertsons.com precisely. */
+/* Split promo card (albertsons.com style): tinted colour panel with heading +
+   underlined "Shop now" on one side, product image on the other. Card 1 uses a
+   warm peach tint (dark text); card 2 uses brand blue (white text). */
 .carousel-promo .carousel-promo-card {
   position: relative;
-  display: flex;
-  align-items: flex-end;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
   aspect-ratio: 342 / 249;
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
   isolation: isolate;
+  background-color: var(--brand-section-grey, #f2f2f2);
+}
+
+.carousel-promo .carousel-promo-card:first-child {
+  background-color: #fbe7d4; /* peach */
+}
+
+.carousel-promo .carousel-promo-card:nth-child(2) {
+  background-color: var(--brand-blue, #04a); /* blue */
 }
 
 .carousel-promo .carousel-promo-card-image {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
+  order: 2;
+  overflow: hidden;
 }
 
 /* stylelint-disable no-descending-specificity -- bento rules intentionally follow slide rules */
@@ -202,22 +212,31 @@
 /* stylelint-enable no-descending-specificity */
 
 .carousel-promo .carousel-promo-card-content {
-  padding: var(--space-m, 16px);
+  order: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-s, 8px);
+  padding: var(--space-l, 24px);
+  color: var(--brand-ink, #2a2928);
+}
+
+.carousel-promo .carousel-promo-card:nth-child(2) .carousel-promo-card-content {
   color: #fff;
-  width: 100%;
-  background: linear-gradient(0deg, rgb(0 0 0 / 55%), rgb(0 0 0 / 0%));
 }
 
 .carousel-promo .carousel-promo-card-content h3 {
-  margin: 0 0 var(--space-xs, 4px);
+  margin: 0;
   font-family: var(--heading-font-family);
-  color: #fff;
+  font-weight: 700;
+  color: inherit;
 }
 
 .carousel-promo .carousel-promo-card-content a:any-link {
-  color: #fff;
+  color: inherit;
   font-weight: 700;
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 @media (width >= 900px) {
@@ -252,10 +271,37 @@
      photo, which — unlike the source art — has no flat colour region. */
   .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide .carousel-promo-slide-content {
     margin: 0;
-    padding: 44px 24px 24px 44px;
+    padding: 48px 24px 24px 48px;
     background-color: transparent;
-    background-image: linear-gradient(105deg, rgb(0 0 0 / 55%) 40%, rgb(0 0 0 / 0%));
-    width: 60%;
-    min-width: 320px;
+    background-image: linear-gradient(105deg, rgb(0 0 0 / 60%) 42%, rgb(0 0 0 / 0%));
+    width: 62%;
+    min-width: 340px;
   }
+}
+
+/* --- albertsons.com hero styling: black pill CTA + paired bottom-left arrows --- */
+
+/* Turn the hero slide's CTA (last <p>, whether plain text or a link) into a
+   black pill button like the source's "Shop now". */
+.carousel-promo .carousel-promo-slide .carousel-promo-slide-content > p:last-child {
+  display: inline-block;
+  margin-top: var(--space-m, 16px);
+  background: var(--brand-ink, #2a2928);
+  color: #fff;
+  border-radius: 999px;
+  padding: 12px 28px;
+  font-weight: 700;
+}
+
+.carousel-promo .carousel-promo-slide .carousel-promo-slide-content > p:last-child a:any-link {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Pair the prev/next arrows together at the bottom-left, like the source */
+.carousel-promo .carousel-promo-bento .carousel-promo-navigation-buttons {
+  inset: auto auto 20px 20px;
+  transform: none;
+  gap: var(--space-s, 8px);
+  width: auto;
 }
