@@ -538,6 +538,32 @@
   color: var(--brand-blue, #04a);
 }
 
+/* Collapsed state: show two rows only, hide the overflow tiles. The nth-child
+   thresholds match the column count at each breakpoint (2 rows = 2 x cols).
+   The .cards-category-expanded modifier (toggled by the "View More" button)
+   drops these rules so every tile shows. */
+.cards.category:not(.cards-category-expanded) .cards-category-tile:nth-child(n + 7) {
+  display: none;
+}
+
+.cards.category .cards-category-more {
+  display: inline-block;
+  margin-top: var(--space-m, 16px);
+  padding: 10px 24px;
+  border: 1px solid var(--brand-blue, #04a);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--brand-blue, #04a);
+  font-weight: 700;
+  font-size: var(--body-font-size-s, 14px);
+  cursor: pointer;
+}
+
+.cards.category .cards-category-more:hover {
+  background: var(--brand-blue, #04a);
+  color: #fff;
+}
+
 @media (width >= 600px) {
   .cards.category .cards-category-track {
     grid-template-columns: repeat(5, 1fr);
@@ -547,11 +573,29 @@
     width: 112px;
     height: 112px;
   }
+
+  /* 5 columns x 2 rows = 10 tiles visible when collapsed */
+  .cards.category:not(.cards-category-expanded) .cards-category-tile:nth-child(n + 7) {
+    display: revert;
+  }
+
+  .cards.category:not(.cards-category-expanded) .cards-category-tile:nth-child(n + 11) {
+    display: none;
+  }
 }
 
 @media (width >= 900px) {
   .cards.category .cards-category-track {
     grid-template-columns: repeat(8, 1fr);
+  }
+
+  /* 8 columns x 2 rows = 16 tiles visible when collapsed */
+  .cards.category:not(.cards-category-expanded) .cards-category-tile:nth-child(n + 11) {
+    display: revert;
+  }
+
+  .cards.category:not(.cards-category-expanded) .cards-category-tile:nth-child(n + 17) {
+    display: none;
   }
 }
 

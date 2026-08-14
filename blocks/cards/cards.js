@@ -244,6 +244,24 @@ function decorateCategory(block) {
     block.append(head);
   }
   block.append(ul);
+
+  // The grid shows two rows (up to 16 tiles at desktop; CSS trims per
+  // breakpoint) and hides the overflow behind a "View More" toggle, matching
+  // albertsons.com. Only add the control when there is something to reveal.
+  const VISIBLE = 16; // 2 rows x 8 columns
+  if (ul.children.length > VISIBLE) {
+    const toggle = createTag('button', {
+      type: 'button',
+      class: 'cards-category-more',
+      'aria-expanded': 'false',
+    }, 'View More');
+    toggle.addEventListener('click', () => {
+      const expanded = block.classList.toggle('cards-category-expanded');
+      toggle.setAttribute('aria-expanded', String(expanded));
+      toggle.textContent = expanded ? 'View Less' : 'View More';
+    });
+    block.append(toggle);
+  }
 }
 
 /**
