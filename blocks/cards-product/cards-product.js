@@ -135,42 +135,67 @@ const isBareProductImage = (el) => {
   return img && /grid-product-card/i.test(img.getAttribute('src') || img.currentSrc || '');
 };
 
-export default function decorate(block) {
-  // Iterate ALL direct children (paragraphs, and any bare <picture>/<img> the
-  // DM auto-block may have unwrapped from a <p>).
-  const nodes = [...block.children].filter(
-    (el) => el.tagName === 'P' || el.tagName === 'PICTURE' || el.tagName === 'IMG',
-  );
-  if (!nodes.length) return;
+/* Collect a product group's field nodes (paragraphs + any bare image). */
+const groupNodes = (container) => [...container.children]
+  .filter((el) => el.tagName === 'P' || el.tagName === 'PICTURE' || el.tagName === 'IMG')
+  .map((el) => {
+    if (isBareProductImage(el)) {
+      const wrap = document.createElement('p');
+      el.replaceWith(wrap);
+      wrap.append(el);
+      return wrap;
+    }
+    return el;
+  });
 
-  // Rail heading: first node that has a "/home/…" View all link and isn't an image.
+/* Does this node's subtree contain a product image (carrier anchor or picture)? */
+const hasProductImage = (el) => {
+  const a = el.querySelector('a[href*="/is/image/"]');
+  if (a && /grid-product-card/i.test(a.getAttribute('href') || '')) return true;
+  const img = el.querySelector('picture img, img');
+  return !!(img && /grid-product-card/i.test(img.getAttribute('src') || img.currentSrc || ''));
+};
+
+export default function decorate(block) {
   let heading = null;
-  if (nodes[0] && nodes[0].tagName === 'P' && !isProductImageLink(nodes[0])
-      && nodes[0].querySelector('a[href*="/home/"]')) {
-    heading = nodes.shift();
+  let groups = [];
+
+  // Preferred structure: block table — each direct-child <div> is a row whose
+  // cell <div> holds the product's paragraphs (row 0 = rail heading).
+  const rowDivs = [...block.children].filter((el) => el.tagName === 'DIV');
+  const productRowDivs = rowDivs.filter((r) => hasProductImage(r));
+
+  if (productRowDivs.length >= 2) {
+    const cellOf = (row) => row.querySelector(':scope > div') || row;
+    // heading = first row div that has a /home/ link but no product image
+    const headRow = rowDivs.find((r) => !hasProductImage(r) && r.querySelector('a[href*="/home/"]'));
+    if (headRow) heading = cellOf(headRow).querySelector(':scope > p') || cellOf(headRow);
+    groups = productRowDivs.map((row) => groupNodes(cellOf(row))).filter((g) => g.length);
+  } else {
+    // Fallback: flat structure — paragraphs (and bare images) as direct
+    // children, each product starting at a product-image node.
+    const nodes = [...block.children].filter(
+      (el) => el.tagName === 'P' || el.tagName === 'PICTURE' || el.tagName === 'IMG',
+    );
+    if (!nodes.length) return;
+    if (nodes[0].tagName === 'P' && !isProductImageLink(nodes[0])
+        && nodes[0].querySelector('a[href*="/home/"]')) {
+      heading = nodes.shift();
+    }
+    let current = null;
+    nodes.forEach((el) => {
+      let startP = null;
+      if (el.tagName === 'P' && isProductImageLink(el)) startP = el;
+      else if (isBareProductImage(el)) {
+        startP = document.createElement('p');
+        el.replaceWith(startP);
+        startP.append(el);
+      }
+      if (startP) { current = [startP]; groups.push(current); } else if (current) current.push(el);
+    });
   }
 
-  // Group nodes into products; each starts at a product image (anchor, or a
-  // bare picture the auto-block unwrapped). Wrap bare images in a <p> so the
-  // rest of buildCard's paragraph logic works uniformly.
-  const groups = [];
-  let current = null;
-  nodes.forEach((el) => {
-    let startP = null;
-    if (el.tagName === 'P' && isProductImageLink(el)) {
-      startP = el;
-    } else if (isBareProductImage(el)) {
-      startP = document.createElement('p');
-      el.replaceWith(startP);
-      startP.append(el);
-    }
-    if (startP) {
-      current = [startP];
-      groups.push(current);
-    } else if (current) {
-      current.push(el);
-    }
-  });
+  if (!groups.length) return;
 
   block.textContent = '';
 
