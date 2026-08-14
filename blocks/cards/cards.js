@@ -182,11 +182,133 @@ function decorateDefault(block) {
   block.replaceChildren(ul);
 }
 
+/**
+ * Decorate the "product" variant: an Albertsons-style horizontal product
+ * carousel. Authored as a normal cards block — an optional first row holding a
+ * heading + "View all" link, then one row per product whose cells contain the
+ * product image and its details (CTA text, price, title link, SNAP, badges).
+ */
+function decorateProduct(block) {
+  const rows = [...block.children];
+
+  // Optional rail heading: first row that has a link but no product picture.
+  let headingRow = null;
+  if (rows[0] && !rows[0].querySelector('picture, img') && rows[0].querySelector('a')) {
+    headingRow = rows.shift();
+  }
+
+  const parseCard = (row) => {
+    // Flatten the row's cells into a flat list of field elements: expand each
+    // cell <div> into its child paragraphs (authors may put all fields in one
+    // cell, or split image/body across two cells — handle both).
+    const cells = [...row.children];
+    const fields = [];
+    cells.forEach((cell) => {
+      const kids = [...cell.children];
+      if (kids.length) fields.push(...kids);
+      else fields.push(cell);
+    });
+
+    const li = createTag('li', { class: 'cards-card' });
+
+    // Image
+    const picture = row.querySelector('picture');
+    const img = row.querySelector('img');
+    const detailsLink = row.querySelector('a[href*="/product-details"], a[href]');
+    const href = detailsLink ? detailsLink.getAttribute('href') : '#';
+    const imageWrap = createTag('a', { class: 'cards-card-image', href });
+    if (picture) imageWrap.append(picture);
+    else if (img) imageWrap.append(img);
+    li.append(imageWrap);
+
+    const body = createTag('div', { class: 'cards-card-body' });
+
+    // Walk the text fields (paragraphs) and classify.
+    let cta = 'Sign in to add';
+    let approx = '';
+    let priceHTML = '';
+    let title = img ? (img.getAttribute('alt') || '') : '';
+    let snap = false;
+    let badge = '';
+
+    fields.forEach((el) => {
+      if (el.querySelector && el.querySelector('picture, img')) return; // image cell
+      const txt = (el.textContent || '').trim();
+      if (!txt) return;
+      if (el.querySelector && el.querySelector('a[href*="/product-details"]')) {
+        title = el.textContent.trim();
+        return;
+      }
+      if (/^sign in to add$/i.test(txt) || (/add$/i.test(txt) && txt.length < 20)) { cta = txt; return; }
+      if (/^approx/i.test(txt)) { approx = 'approx.'; return; }
+      if (/\bprice\b|\$/i.test(txt)) { priceHTML = el.innerHTML; return; }
+      if (/^snap/i.test(txt)) { snap = true; return; }
+      if (/^bestseller$/i.test(txt)) { badge = 'Bestseller'; }
+    });
+
+    if (badge) {
+      imageWrap.append(createTag('span', { class: 'cards-product-badge' }, badge));
+    }
+    body.append(createTag('a', { class: 'cards-product-cta', href }, cta));
+    if (approx) body.append(createTag('p', { class: 'cards-product-approx' }, approx));
+    if (priceHTML) {
+      const price = createTag('p', { class: 'cards-product-price' });
+      price.innerHTML = priceHTML.replace(/your price/i, '').replace(/original price/ig, '');
+      body.append(price);
+    }
+    body.append(createTag('a', { class: 'cards-product-title', href }, title));
+    if (snap) body.append(createTag('span', { class: 'cards-product-snap' }, 'SNAP'));
+
+    li.append(body);
+    return li;
+  };
+
+  const track = createTag('ul', { class: 'cards-product-track' });
+  rows.forEach((row) => {
+    if (!row.querySelector('picture, img')) return;
+    track.append(parseCard(row));
+  });
+
+  const viewport = createTag('div', { class: 'cards-product-viewport' });
+  viewport.append(track);
+
+  block.replaceChildren();
+  if (headingRow) {
+    const head = createTag('div', { class: 'cards-product-header' });
+    while (headingRow.firstChild) head.append(headingRow.firstChild);
+    // unwrap a single wrapper div
+    const only = head.firstElementChild;
+    if (head.children.length === 1 && only.tagName === 'DIV') {
+      while (only.firstChild) head.append(only.firstChild);
+      only.remove();
+    }
+    block.append(head);
+  }
+  block.append(viewport);
+
+  const nav = (dir, label) => {
+    const btn = createTag('button', { type: 'button', class: `cards-product-nav cards-product-nav-${dir}`, 'aria-label': label });
+    btn.addEventListener('click', () => {
+      viewport.scrollBy({ left: Math.round(viewport.clientWidth * 0.8) * (dir === 'prev' ? -1 : 1), behavior: 'smooth' });
+    });
+    return btn;
+  };
+  block.append(nav('prev', 'Previous products'), nav('next', 'Next products'));
+
+  // Rebuild any remaining raw <img> into optimized pictures.
+  block.querySelectorAll('picture > img').forEach((im) => {
+    const p = im.closest('picture');
+    if (p) p.replaceWith(createOptimizedPicture(im.src, im.alt || '', false, [{ width: '750' }]));
+  });
+}
+
 export default async function decorate(block) {
   if (block.classList.contains('links')) {
     await decorateLinks(block);
   } else if (block.classList.contains('bento')) {
     decorateBento(block);
+  } else if (block.classList.contains('product')) {
+    decorateProduct(block);
   } else {
     decorateDefault(block);
   }
