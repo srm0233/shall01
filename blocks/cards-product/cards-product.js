@@ -156,7 +156,7 @@ const hasProductImage = (el) => {
   return !!(img && /grid-product-card/i.test(img.getAttribute('src') || img.currentSrc || ''));
 };
 
-export default function decorate(block) {
+function buildCarousel(block) {
   let heading = null;
   let groups = [];
 
@@ -195,7 +195,7 @@ export default function decorate(block) {
     });
   }
 
-  if (!groups.length) return;
+  if (!groups.length) return false;
 
   block.textContent = '';
 
@@ -213,9 +213,14 @@ export default function decorate(block) {
   const ul = document.createElement('ul');
   ul.className = 'cards-product-track';
   groups.forEach((group) => {
-    const card = buildCard(group);
-    moveInstrumentation(group[0], card);
-    ul.append(card);
+    try {
+      const card = buildCard(group);
+      try { moveInstrumentation(group[0], card); } catch (e) { /* instrumentation optional */ }
+      ul.append(card);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('cards-product: failed to build a card', e);
+    }
   });
   viewport.append(ul);
   block.append(viewport);
@@ -234,4 +239,20 @@ export default function decorate(block) {
   };
   block.append(nav('prev', 'Previous products'));
   block.append(nav('next', 'Next products'));
+  return true;
+}
+
+export default function decorate(block) {
+  // Build immediately. If no product groups were found yet (e.g. the DM
+  // auto-block hasn't finished rebuilding <picture> elements, or block markup
+  // is still settling), retry a few times before giving up — this makes the
+  // carousel resilient to decoration-order/timing differences on the server.
+  if (buildCarousel(block)) return;
+  let tries = 0;
+  const retry = () => {
+    tries += 1;
+    if (buildCarousel(block) || tries >= 5) return;
+    setTimeout(retry, 300);
+  };
+  setTimeout(retry, 100);
 }
