@@ -373,6 +373,282 @@ function decorateProduct(block) {
   });
 }
 
+/**
+ * Split an optional leading heading row off a block. Returns the heading row
+ * (or null) and leaves the remaining product/card rows in place. A heading row
+ * is the first row that carries no image.
+ */
+function takeHeadingRow(rows) {
+  if (rows[0] && !rows[0].querySelector('picture, img, a[href*="/is/image/"]')) {
+    return rows.shift();
+  }
+  return null;
+}
+
+/** Append a decorated heading (unwrapping a single wrapper div) to a block. */
+function appendHeader(block, headingRow, cls) {
+  if (!headingRow) return;
+  const head = createTag('div', { class: cls });
+  while (headingRow.firstChild) head.append(headingRow.firstChild);
+  const only = head.firstElementChild;
+  if (head.children.length === 1 && only && only.tagName === 'DIV') {
+    while (only.firstChild) head.append(only.firstChild);
+    only.remove();
+  }
+  block.append(head);
+}
+
+/** Turn a Scene7/DM anchor or bare <img> into an optimized <picture>. */
+function pictureFrom(el, alt, width) {
+  if (!el) return null;
+  const existing = el.tagName === 'PICTURE' ? el : el.querySelector('picture');
+  if (existing) return existing;
+  const anchor = el.tagName === 'A' ? el : el.querySelector('a[href*="/is/image/"]');
+  const img = el.querySelector ? el.querySelector('img') : (el.tagName === 'IMG' ? el : null);
+  const src = anchor ? anchor.getAttribute('href') : (img && img.getAttribute('src'));
+  if (!src) return null;
+  // AEM/Scene7 URLs benefit from optimized renditions; a bare <img> pointing at
+  // a third-party CDN (e.g. the mealime recipe photo) should be used as-is so we
+  // don't append query params the external host doesn't understand.
+  if (img && !anchor && !/\/is\/image\/|adobeaemcloud\.com/.test(src)) {
+    return img;
+  }
+  return createOptimizedPicture(src, alt || '', false, [{ width: String(width || 750) }]);
+}
+
+/** Attach prev/next scroll buttons to a horizontally scrolling viewport. */
+function addCarouselNav(block, viewport, cls) {
+  const nav = (dir, label) => {
+    const btn = createTag('button', { type: 'button', class: `${cls} ${cls}-${dir}`, 'aria-label': label });
+    btn.addEventListener('click', () => {
+      viewport.scrollBy({ left: Math.round(viewport.clientWidth * 0.8) * (dir === 'prev' ? -1 : 1), behavior: 'smooth' });
+    });
+    return btn;
+  };
+  block.append(nav('prev', 'Previous'), nav('next', 'Next'));
+}
+
+/**
+ * Decorate the "recipe" variant: Albertsons meal/bundle carousel. Each recipe
+ * card shows a large hero photo, a 2x2 grid of ingredient thumbnails, and a
+ * title with a trailing arrow linking to the bundle. Authored rows hold, in
+ * order: a title link, the hero image, then the ingredient-thumbnail images.
+ */
+function decorateRecipe(block) {
+  const rows = [...block.children];
+  const headingRow = takeHeadingRow(rows);
+
+  const track = createTag('ul', { class: 'cards-recipe-track' });
+  rows.forEach((row) => {
+    // Flatten the row's cells into field elements.
+    const fields = [];
+    [...row.children].forEach((cell) => {
+      const kids = [...cell.children];
+      if (kids.length) fields.push(...kids);
+      else fields.push(cell);
+    });
+
+    // The title is the link that points at the recipe/bundle detail page.
+    const titleLink = row.querySelector('a[href^="/bundles/"], a[href*="/meal-plans-recipes/"], a[href*="/recipes/"]');
+    const href = titleLink ? titleLink.getAttribute('href') : '#';
+    const title = titleLink ? titleLink.textContent.trim() : '';
+
+    // Any image URL in a field — a Scene7/DM anchor (before auto-block) or the
+    // <img>/<source> src of a <picture> (after the auto-block has converted it).
+    const fieldImgUrl = (f) => {
+      if (!f || !f.querySelector) return '';
+      const a = f.querySelector('a[href*="/is/image/"]');
+      if (a) return a.getAttribute('href') || '';
+      const img = f.querySelector('img');
+      if (img && img.getAttribute('src')) return img.getAttribute('src');
+      const src = f.querySelector('source');
+      return (src && src.getAttribute('srcset')) || '';
+    };
+    // Scene7 renditions carry "/is/image/" in their URL; the mealime hero photo
+    // does not. This survives the auto-block's <picture> conversion, so it works
+    // whichever decorator runs first.
+    const isScene7 = (url) => /\/is\/image\//.test(url);
+
+    const imgFields = fields.filter((f) => f.querySelector && (f.querySelector('img') || f.querySelector('a[href*="/is/image/"]')));
+    let heroField = imgFields.find((f) => !isScene7(fieldImgUrl(f)));
+    if (!heroField) [heroField] = imgFields;
+    const thumbFields = imgFields.filter((f) => f !== heroField && isScene7(fieldImgUrl(f))).slice(0, 4);
+
+    const li = createTag('li', { class: 'cards-recipe-card' });
+    const link = createTag('a', { class: 'cards-recipe-link', href });
+
+    const hero = createTag('div', { class: 'cards-recipe-hero' });
+    const heroPic = pictureFrom(heroField, title, 750);
+    if (heroPic) hero.append(heroPic);
+    link.append(hero);
+
+    if (thumbFields.length) {
+      const thumbs = createTag('div', { class: 'cards-recipe-thumbs' });
+      thumbFields.forEach((tf) => {
+        const cell = createTag('span', { class: 'cards-recipe-thumb' });
+        const pic = pictureFrom(tf, '', 200);
+        if (pic) cell.append(pic);
+        thumbs.append(cell);
+      });
+      link.append(thumbs);
+    }
+
+    const foot = createTag('div', { class: 'cards-recipe-foot' });
+    foot.append(createTag('span', { class: 'cards-recipe-title' }, title));
+    foot.append(createTag('span', { class: 'cards-recipe-arrow', 'aria-hidden': 'true' }));
+    link.append(foot);
+
+    li.append(link);
+    track.append(li);
+  });
+
+  const viewport = createTag('div', { class: 'cards-recipe-viewport' });
+  viewport.append(track);
+  block.replaceChildren();
+  appendHeader(block, headingRow, 'cards-recipe-header');
+  block.append(viewport);
+  addCarouselNav(block, viewport, 'cards-recipe-nav');
+}
+
+/**
+ * Decorate the "feature" variant (Categories A): up to 4 large image cards with
+ * a caption beneath. Extra rows beyond 4 are dropped. When fewer than 4 cards
+ * are authored, the track reflows so the final card grows to fill the row.
+ */
+function decorateFeature(block) {
+  const rows = [...block.children];
+  const headingRow = takeHeadingRow(rows);
+
+  const cards = rows
+    .filter((row) => row.querySelector('picture, img, a[href*="/is/image/"]'))
+    .slice(0, 4); // hard cap at 4
+
+  const ul = createTag('ul', { class: 'cards-feature-track' });
+  ul.dataset.count = String(cards.length);
+  cards.forEach((row) => {
+    const links = [...row.querySelectorAll('a[href]')];
+    const navLink = links.find((a) => !/\/is\/image\//.test(a.getAttribute('href') || ''));
+    // Caption: the row's plain-text (non-link) content, else the image link text.
+    let caption = '';
+    [...row.querySelectorAll('p')].forEach((p) => {
+      if (!p.querySelector('a') && p.textContent.trim()) caption = p.textContent.trim();
+    });
+    if (!caption && navLink) caption = navLink.textContent.trim();
+    if (!caption) {
+      const imgLink = links.find((a) => /\/is\/image\//.test(a.getAttribute('href') || ''));
+      caption = imgLink ? imgLink.textContent.trim() : '';
+    }
+    const href = navLink ? navLink.getAttribute('href') : (links[0] && links[0].getAttribute('href')) || '#';
+
+    const li = createTag('li', { class: 'cards-feature-card' });
+    const link = createTag('a', { class: 'cards-feature-link', href });
+    const imageWrap = createTag('span', { class: 'cards-feature-image' });
+    const pic = pictureFrom(row.querySelector('picture, a[href*="/is/image/"], img'), caption, 750);
+    if (pic) imageWrap.append(pic);
+    link.append(imageWrap);
+    link.append(createTag('span', { class: 'cards-feature-caption' }, caption));
+    li.append(link);
+    ul.append(li);
+  });
+
+  block.replaceChildren();
+  appendHeader(block, headingRow, 'cards-feature-header');
+  block.append(ul);
+}
+
+/**
+ * Decorate the "coupon" variant (Coupons & deals carousel). Each coupon card
+ * shows a rewards/offer badge line, a product title, a short description, an
+ * "Offer Details" link, a product image, a "Clip Coupon" button, and usage +
+ * expiry text. Fields are classified by content so authoring stays flexible.
+ */
+function decorateCoupon(block) {
+  const rows = [...block.children];
+  const headingRow = takeHeadingRow(rows);
+
+  const track = createTag('ul', { class: 'cards-coupon-track' });
+  rows.forEach((row) => {
+    const fields = [];
+    [...row.children].forEach((cell) => {
+      const kids = [...cell.children];
+      if (kids.length) fields.push(...kids);
+      else fields.push(cell);
+    });
+
+    // Image field: a Scene7 anchor, an already-converted <picture>, or an <img>.
+    const isImageField = (f) => f && (
+      (f.tagName === 'PICTURE')
+      || (f.querySelector && (f.querySelector('picture') || f.querySelector('img') || f.querySelector('a[href*="/is/image/"]')))
+    );
+    const imgField = fields.find(isImageField);
+
+    // Details link: an anchor whose text reads "…Details" (e.g. "Offer Details").
+    let detailsLink = null;
+    fields.forEach((f) => {
+      if (f === imgField || !f.querySelector) return;
+      const a = f.querySelector('a[href]');
+      if (a && /details/i.test(a.textContent || '')) detailsLink = a;
+    });
+
+    let badge = '';
+    let title = '';
+    let desc = '';
+    let clip = 'Clip Coupon';
+    let usage = '';
+    let expires = '';
+
+    fields.forEach((el) => {
+      if (el === imgField) return;
+      if (detailsLink && el.contains(detailsLink)) return; // handled separately
+      const t = (el.textContent || '').trim();
+      if (!t) return;
+      if (/^clip coupon$/i.test(t)) { clip = t; return; }
+      if (/^unlimited use|^limit\b|per (household|order)/i.test(t)) { usage = t; return; }
+      if (/^expires?/i.test(t)) { expires = t; return; }
+      if (!badge && (/points|10x|earn|\bfor\b/i.test(t) || /\$[\d.]+\s*(each|off)/i.test(t))) { badge = t; return; }
+      if (!title) { title = t; return; }
+      desc = desc ? `${desc} ${t}` : t;
+    });
+
+    const li = createTag('li', { class: 'cards-coupon-card' });
+
+    const top = createTag('div', { class: 'cards-coupon-top' });
+    if (badge) top.append(createTag('span', { class: 'cards-coupon-badge' }, badge));
+
+    const bodyRow = createTag('div', { class: 'cards-coupon-body' });
+    const info = createTag('div', { class: 'cards-coupon-info' });
+    if (title) info.append(createTag('p', { class: 'cards-coupon-title' }, title));
+    if (desc) info.append(createTag('p', { class: 'cards-coupon-desc' }, desc));
+    if (detailsLink) {
+      const dl = createTag('a', { class: 'cards-coupon-details', href: detailsLink.getAttribute('href') }, detailsLink.textContent.trim() || 'Offer Details');
+      info.append(dl);
+    }
+    bodyRow.append(info);
+
+    const imageWrap = createTag('span', { class: 'cards-coupon-image' });
+    const pic = pictureFrom(imgField, title, 300);
+    if (pic) imageWrap.append(pic);
+    bodyRow.append(imageWrap);
+
+    const foot = createTag('div', { class: 'cards-coupon-foot' });
+    foot.append(createTag('button', { type: 'button', class: 'cards-coupon-clip' }, clip));
+    const meta = createTag('div', { class: 'cards-coupon-meta' });
+    if (usage) meta.append(createTag('span', { class: 'cards-coupon-usage' }, usage));
+    if (expires) meta.append(createTag('span', { class: 'cards-coupon-expires' }, expires));
+    foot.append(meta);
+
+    li.append(top, bodyRow, foot);
+    track.append(li);
+  });
+
+  const viewport = createTag('div', { class: 'cards-coupon-viewport' });
+  viewport.append(track);
+  block.replaceChildren();
+  appendHeader(block, headingRow, 'cards-coupon-header');
+  block.append(viewport);
+  addCarouselNav(block, viewport, 'cards-coupon-nav');
+}
+
 export default async function decorate(block) {
   if (block.classList.contains('links')) {
     await decorateLinks(block);
@@ -382,6 +658,12 @@ export default async function decorate(block) {
     decorateProduct(block);
   } else if (block.classList.contains('category')) {
     decorateCategory(block);
+  } else if (block.classList.contains('recipe')) {
+    decorateRecipe(block);
+  } else if (block.classList.contains('feature')) {
+    decorateFeature(block);
+  } else if (block.classList.contains('coupon')) {
+    decorateCoupon(block);
   } else {
     decorateDefault(block);
   }
