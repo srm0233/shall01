@@ -511,6 +511,84 @@ function decorateRecipe(block) {
 }
 
 /**
+ * Decorate the "recipe-b" variant: Albertsons recipe carousel (Breakfast
+ * champions style). Each card is a large photo with a "N servings" badge
+ * overlaid top-right, then a title and an "Est $X / serving" price beneath.
+ * Authored rows hold, in order: an image cell (whose text is the servings
+ * label), a title cell, and a price cell.
+ */
+function decorateRecipeB(block) {
+  const rows = [...block.children];
+  const headingRow = takeHeadingRow(rows);
+
+  const track = createTag('ul', { class: 'cards-recipeb-track' });
+  rows.forEach((row) => {
+    const fields = [];
+    [...row.children].forEach((cell) => {
+      const kids = [...cell.children];
+      if (kids.length) fields.push(...kids);
+      else fields.push(cell);
+    });
+
+    const recipeLink = row.querySelector('a[href*="/meal-plans-recipes/"], a[href*="/recipes/"], a[href*="/bundles/"]');
+    const href = recipeLink ? recipeLink.getAttribute('href') : '#';
+
+    // Image field: the cell carrying a picture/img (its text is the "N servings"
+    // badge). Works before or after the DM/auto-block conversion.
+    const imgField = fields.find((f) => f.querySelector && (f.querySelector('picture') || f.querySelector('img')));
+    const servings = imgField ? (imgField.textContent || '').trim() : '';
+
+    // Remaining text fields (excluding the image) are title then price. The
+    // price field is the one that mentions a currency amount / "serving".
+    const textFields = fields.filter((f) => f !== imgField && (f.textContent || '').trim());
+    const priceField = textFields.find((f) => /\$|per serving|\/ serving/i.test(f.textContent || ''));
+    const titleField = textFields.find((f) => f !== priceField);
+    const title = titleField ? titleField.textContent.trim() : '';
+
+    // Clean the doubled price string: the source repeats it as
+    // "Estimated price $4.61 per servingEst $4.61 / serving[original price $X$X]".
+    // Keep the compact "Est $X / serving" form and any struck original.
+    let priceHTML = '';
+    if (priceField) {
+      const raw = (priceField.textContent || '').trim();
+      const estMatch = raw.match(/Est\s*\$[\d.,]+\s*\/\s*serving/i);
+      const est = estMatch ? estMatch[0] : raw.replace(/estimated price.*?per serving/i, '').trim();
+      const origMatch = raw.match(/original price\s*(\$[\d.,]+)/i);
+      priceHTML = est;
+      if (origMatch) priceHTML += ` <del>${origMatch[1]}</del>`;
+    }
+
+    const li = createTag('li', { class: 'cards-recipeb-card' });
+    const link = createTag('a', { class: 'cards-recipeb-link', href });
+
+    const imageWrap = createTag('div', { class: 'cards-recipeb-image' });
+    const pic = pictureFrom(imgField, title, 750);
+    if (pic) imageWrap.append(pic);
+    if (servings) imageWrap.append(createTag('span', { class: 'cards-recipeb-servings' }, servings));
+    link.append(imageWrap);
+
+    const body = createTag('div', { class: 'cards-recipeb-body' });
+    if (title) body.append(createTag('p', { class: 'cards-recipeb-title' }, title));
+    if (priceHTML) {
+      const price = createTag('p', { class: 'cards-recipeb-price' });
+      price.innerHTML = priceHTML;
+      body.append(price);
+    }
+    link.append(body);
+
+    li.append(link);
+    track.append(li);
+  });
+
+  const viewport = createTag('div', { class: 'cards-recipeb-viewport' });
+  viewport.append(track);
+  block.replaceChildren();
+  appendHeader(block, headingRow, 'cards-recipeb-header');
+  block.append(viewport);
+  addCarouselNav(block, viewport, 'cards-recipeb-nav');
+}
+
+/**
  * Decorate the "feature" variant (Categories A): up to 4 large image cards with
  * a caption beneath. Extra rows beyond 4 are dropped. When fewer than 4 cards
  * are authored, the track reflows so the final card grows to fill the row.
@@ -658,6 +736,8 @@ export default async function decorate(block) {
     decorateProduct(block);
   } else if (block.classList.contains('category')) {
     decorateCategory(block);
+  } else if (block.classList.contains('recipe-b')) {
+    decorateRecipeB(block);
   } else if (block.classList.contains('recipe')) {
     decorateRecipe(block);
   } else if (block.classList.contains('feature')) {
