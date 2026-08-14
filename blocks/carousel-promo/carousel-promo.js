@@ -99,7 +99,11 @@ function createSlide(row, slideIndex, carouselId) {
   return slide;
 }
 
-/* Promo rail card: image cell + content cell, whole card links to its CTA. */
+/* Promo rail card: the source art is a single full-bleed banner (tinted panel
+   baked in on one side, product photo on the other). We render that image as a
+   background layer and overlay the heading + CTA on top, like albertsons.com —
+   rather than splitting it into image/text columns, which would crop the wide
+   banner and distort the product. */
 function createPromoCard(row) {
   const card = document.createElement('div');
   card.classList.add('carousel-promo-card');

@@ -63,6 +63,13 @@
   width: var(--slide-content-width, auto);
 }
 
+/* Slide-position dots are hidden — albertsons.com's hero uses only the paired
+   prev/next arrows. The whole indicators nav (and its padded bar) is removed so
+   there's no leftover gap beneath the carousel. */
+.carousel-promo nav[aria-label]:has(.carousel-promo-slide-indicators) {
+  display: none;
+}
+
 .carousel-promo .carousel-promo-slide-indicators {
   display: flex;
   flex-wrap: wrap;
@@ -172,14 +179,14 @@
   gap: var(--space-m, 16px);
 }
 
-/* Split promo card (albertsons.com style): tinted colour panel with heading +
-   underlined "Shop now" on one side, product image on the other. Card 1 uses a
-   warm peach tint (dark text); card 2 uses brand blue (white text). */
+/* Promo card (albertsons.com style): the source art is a single full-bleed
+   banner with its tinted colour panel baked in on one side and the product
+   photo on the other. We show that banner as a full-bleed background layer and
+   overlay the heading + "Shop now" on top. Card 1 art is peach-toned (dark
+   text); card 2 is brand blue (white text). */
 .carousel-promo .carousel-promo-card {
   position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: stretch;
+  display: block;
   aspect-ratio: 342 / 249;
   border-radius: 12px;
   overflow: hidden;
@@ -189,15 +196,18 @@
 }
 
 .carousel-promo .carousel-promo-card:first-child {
-  background-color: #fbe7d4; /* peach */
+  background-color: #fbe7d4; /* peach — matches the card 1 banner tint */
 }
 
 .carousel-promo .carousel-promo-card:nth-child(2) {
-  background-color: var(--brand-blue, #04a); /* blue */
+  background-color: var(--brand-blue, #04a); /* blue — matches card 2 banner tint */
 }
 
+/* Full-bleed banner behind the text */
 .carousel-promo .carousel-promo-card-image {
-  order: 2;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   overflow: hidden;
 }
 
@@ -207,12 +217,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
 }
 /* stylelint-enable no-descending-specificity */
 
 .carousel-promo .carousel-promo-card-content {
-  order: 1;
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
