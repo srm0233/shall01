@@ -9,7 +9,8 @@
             "resourceType": "core/franklin/components/block/v1/block",
             "template": {
               "name": "Carousel Promo",
-              "filter": "carousel-promo"
+              "filter": "carousel-promo",
+              "model": "carousel-promo"
             }
           }
         }
@@ -32,6 +33,25 @@
     }
   ],
   "models": [
+    {
+      "id": "carousel-promo",
+      "fields": [
+        {
+          "component": "select",
+          "name": "classes",
+          "value": "",
+          "label": "Panel color",
+          "description": "Solid colour of the hero's text panel. Defaults to brand blue.",
+          "options": [
+            { "name": "Brand blue (default)", "value": "" },
+            { "name": "Green", "value": "green" },
+            { "name": "Purple", "value": "purple" },
+            { "name": "Peach", "value": "peach" },
+            { "name": "Ink (near-black)", "value": "ink" }
+          ]
+        }
+      ]
+    },
     {
       "id": "carousel-promo-item",
       "fields": [

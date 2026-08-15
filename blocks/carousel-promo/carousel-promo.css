@@ -1,3 +1,39 @@
+/* Author-selectable panel colour for the split hero slide. Defaults to brand
+   blue; an author can pick another colour while authoring by adding one of the
+   variant options to the block name — e.g. "Carousel Promo (green)" — which
+   renders as an extra class token (.carousel-promo.green) and overrides the
+   two custom properties below. --promo-panel-color fills the left panel and the
+   arrow pill; --promo-panel-text sets the text/CTA colour on that panel. */
+.carousel-promo {
+  --promo-panel-color: var(--brand-blue, #04a);
+  --promo-panel-color-dark: var(--brand-blue-dark, #036);
+  --promo-panel-text: #fff;
+}
+
+.carousel-promo.green {
+  --promo-panel-color: #2e7d32;
+  --promo-panel-color-dark: #1b5e20;
+  --promo-panel-text: #fff;
+}
+
+.carousel-promo.purple {
+  --promo-panel-color: #6a1bd0;
+  --promo-panel-color-dark: #4a12a0;
+  --promo-panel-text: #fff;
+}
+
+.carousel-promo.peach {
+  --promo-panel-color: #fbe7d4;
+  --promo-panel-color-dark: #e8c9a8;
+  --promo-panel-text: var(--brand-ink, #2a2928);
+}
+
+.carousel-promo.ink {
+  --promo-panel-color: var(--brand-ink, #2a2928);
+  --promo-panel-color-dark: #000;
+  --promo-panel-text: #fff;
+}
+
 .carousel-promo .carousel-promo-slides-container {
   position: relative;
   border-radius: 12px;
@@ -307,9 +343,9 @@
     padding: 48px 48px 76px;
     width: auto;
     min-width: 0;
-    background-color: var(--brand-blue, #04a);
+    background-color: var(--promo-panel-color);
     background-image: none;
-    color: #fff;
+    color: var(--promo-panel-text);
   }
 
   .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide .carousel-promo-slide-content h2 {
@@ -318,14 +354,14 @@
     font-weight: 800;
     font-size: clamp(2rem, 3.4vw, 3.25rem);
     line-height: 1.05;
-    color: #fff;
+    color: var(--promo-panel-text);
   }
 
   .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide .carousel-promo-slide-content > p {
     margin: 0;
     font-size: var(--body-font-size-l, 20px);
     line-height: 1.4;
-    color: #fff;
+    color: var(--promo-panel-text);
   }
 }
 
@@ -337,8 +373,8 @@
   display: inline-block;
   margin-top: var(--space-s, 8px);
   background: transparent;
-  color: #fff;
-  border: 2px solid #fff;
+  color: var(--promo-panel-text);
+  border: 2px solid var(--promo-panel-text);
   border-radius: 999px;
   padding: 14px 40px;
   font-weight: 700;
@@ -347,8 +383,8 @@
 }
 
 .carousel-promo .carousel-promo-slide .carousel-promo-slide-content > p:last-child:hover {
-  background: #fff;
-  color: var(--brand-blue, #04a);
+  background: var(--promo-panel-text);
+  color: var(--promo-panel-color);
 }
 
 .carousel-promo .carousel-promo-slide .carousel-promo-slide-content > p:last-child a:any-link {
@@ -365,17 +401,17 @@
   width: auto;
   padding: 4px;
   border-radius: 999px;
-  background-color: var(--brand-blue-dark, #036);
+  background-color: var(--promo-panel-color-dark);
 }
 
 .carousel-promo .carousel-promo-bento .carousel-promo-navigation-buttons button {
   width: 40px;
   height: 40px;
   background-color: transparent;
-  color: #fff;
+  color: var(--promo-panel-text);
 }
 
 .carousel-promo .carousel-promo-bento .carousel-promo-navigation-buttons button:hover,
 .carousel-promo .carousel-promo-bento .carousel-promo-navigation-buttons button:focus-visible {
-  background-color: rgb(255 255 255 / 20%);
+  background-color: rgb(128 128 128 / 25%);
 }
