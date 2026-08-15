@@ -264,8 +264,12 @@
   }
 
   /* two stacked aspect-ratio cards + gap set the rail height; the carousel
-     stretches to match so both columns are exactly the same height. */
+     stretches to match so both columns are exactly the same height. The
+     intermediate slides <ul> must also be 100% tall, otherwise it collapses to
+     the image's intrinsic height and the slide can't fill the shared row —
+     leaving an empty gap below the hero on desktop. */
   .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slides-container,
+  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slides,
   .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide {
     height: 100%;
   }
