@@ -31,6 +31,12 @@
     ]
   },
   {
+    "id": "carousel-promo",
+    "components": [
+      "carousel-promo-item"
+    ]
+  },
+  {
     "id": "columns",
     "components": [
       "columns-row"

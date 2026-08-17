@@ -163,6 +163,30 @@
           {
             "name": "Links",
             "value": "links"
+          },
+          {
+            "name": "Product carousel",
+            "value": "product"
+          },
+          {
+            "name": "Category grid",
+            "value": "category"
+          },
+          {
+            "name": "Recipe carousel",
+            "value": "recipe"
+          },
+          {
+            "name": "Recipe carousel B",
+            "value": "recipe-b"
+          },
+          {
+            "name": "Feature (up to 4)",
+            "value": "feature"
+          },
+          {
+            "name": "Coupon carousel",
+            "value": "coupon"
           }
         ]
       }
@@ -191,6 +215,67 @@
         "name": "text",
         "label": "Text",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "carousel-promo",
+    "fields": [
+      {
+        "component": "select",
+        "name": "classes",
+        "value": "",
+        "label": "Panel color",
+        "description": "Solid colour of the hero's text panel. Defaults to brand blue.",
+        "options": [
+          {
+            "name": "Brand blue (default)",
+            "value": ""
+          },
+          {
+            "name": "Green",
+            "value": "green"
+          },
+          {
+            "name": "Purple",
+            "value": "purple"
+          },
+          {
+            "name": "Peach",
+            "value": "peach"
+          },
+          {
+            "name": "Ink (near-black)",
+            "value": "ink"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "carousel-promo-item",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false,
+        "description": "Slide background / promo image."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Alt Text",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "name": "text",
+        "label": "Text",
+        "valueType": "string",
+        "description": "Heading, description and CTA link for the slide."
       }
     ]
   },

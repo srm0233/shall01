@@ -7,6 +7,7 @@ import {
   resolveArticlesFromIndex,
   isUE,
 } from '../../scripts/shared.js';
+import { moveInstrumentation } from '../../ue/scripts/ue-utils.js';
 
 function buildLinksCard(article) {
   const href = normalizePath(article.path);
@@ -66,6 +67,7 @@ function decorateBento(block) {
 
   [...block.children].forEach((row, idx) => {
     const li = createTag('li');
+    moveInstrumentation(row, li); // keep the row editable in Universal Editor
     if (idx === 0) li.classList.add('cards-card-featured');
     while (row.firstElementChild) li.append(row.firstElementChild);
 
@@ -117,6 +119,7 @@ function decorateDefault(block) {
 
   [...block.children].forEach((row) => {
     const li = createTag('li');
+    moveInstrumentation(row, li); // keep the row editable in Universal Editor
     while (row.firstElementChild) li.append(row.firstElementChild);
 
     const content = li.firstElementChild;
@@ -210,6 +213,7 @@ function decorateCategory(block) {
     const href = labelLink.getAttribute('href');
 
     const li = createTag('li', { class: 'cards-category-tile' });
+    moveInstrumentation(row, li); // keep the row editable in Universal Editor
     const link = createTag('a', { class: 'cards-category-link', href });
     const imageWrap = createTag('span', { class: 'cards-category-image' });
 
@@ -292,6 +296,7 @@ function decorateProduct(block) {
     });
 
     const li = createTag('li', { class: 'cards-card' });
+    moveInstrumentation(row, li); // keep the row editable in Universal Editor
 
     // Image
     const picture = row.querySelector('picture');
@@ -493,6 +498,7 @@ function decorateRecipe(block) {
     const thumbFields = imgFields.filter((f) => f !== heroField && isScene7(fieldImgUrl(f))).slice(0, 4);
 
     const li = createTag('li', { class: 'cards-recipe-card' });
+    moveInstrumentation(row, li); // keep the row editable in Universal Editor
     const link = createTag('a', { class: 'cards-recipe-link', href });
 
     const hero = createTag('div', { class: 'cards-recipe-hero' });
@@ -577,6 +583,7 @@ function decorateRecipeB(block) {
     }
 
     const li = createTag('li', { class: 'cards-recipeb-card' });
+    moveInstrumentation(row, li); // keep the row editable in Universal Editor
     const link = createTag('a', { class: 'cards-recipeb-link', href });
 
     const imageWrap = createTag('div', { class: 'cards-recipeb-image' });
@@ -637,6 +644,7 @@ function decorateFeature(block) {
     const href = navLink ? navLink.getAttribute('href') : (links[0] && links[0].getAttribute('href')) || '#';
 
     const li = createTag('li', { class: 'cards-feature-card' });
+    moveInstrumentation(row, li); // keep the row editable in Universal Editor
     const link = createTag('a', { class: 'cards-feature-link', href });
     const imageWrap = createTag('span', { class: 'cards-feature-image' });
     const pic = pictureFrom(row.querySelector('picture, a[href*="/is/image/"], img'), caption, 750);
@@ -707,6 +715,7 @@ function decorateCoupon(block) {
     });
 
     const li = createTag('li', { class: 'cards-coupon-card' });
+    moveInstrumentation(row, li); // keep the row editable in Universal Editor
 
     const top = createTag('div', { class: 'cards-coupon-top' });
     if (badge) top.append(createTag('span', { class: 'cards-coupon-badge' }, badge));

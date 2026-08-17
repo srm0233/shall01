@@ -99,6 +99,45 @@
           }
         },
         {
+          "title": "Carousel Promo",
+          "id": "carousel-promo",
+          "model": "carousel-promo",
+          "filter": "carousel-promo",
+          "plugins": {
+            "da": {
+              "name": "carousel-promo",
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Carousel Promo Slide",
+          "id": "carousel-promo-item",
+          "model": "carousel-promo-item",
+          "plugins": {
+            "da": {
+              "name": "carousel-promo-item",
+              "rows": 1,
+              "columns": 2,
+              "fields": [
+                {
+                  "name": "image",
+                  "selector": "div:nth-child(1)>picture>img[src]"
+                },
+                {
+                  "name": "imageAlt",
+                  "selector": "div:nth-child(1)>picture>img[alt]"
+                },
+                {
+                  "name": "text",
+                  "selector": "div:nth-child(2)"
+                }
+              ]
+            }
+          }
+        },
+        {
           "title": "Columns",
           "id": "columns",
           "model": "columns",
