@@ -124,10 +124,47 @@ function isPromoRow(row) {
   return !!row.querySelector(':scope > div h3');
 }
 
+/* A colour value the author can type into a config row: a hex code, an
+   rgb()/hsl() function, or a plain CSS colour keyword. Kept permissive but
+   safe — only these forms are accepted, so arbitrary text can't be injected as
+   a style value. */
+const COLOUR_RE = /^(#[0-9a-f]{3,8}|(?:rgb|hsl)a?\([\d\s.,%/]+\)|[a-z]+)$/i;
+
+/* Optional config row: first cell is a "colour" key, second cell holds any CSS
+   colour value. Lets an author pick ANY panel colour while authoring (not just
+   the preset variant classes). Returns the row so it can be removed, or null. */
+function readColourConfig(block) {
+  const rows = [...block.querySelectorAll(':scope > div')];
+  const configRow = rows.find((row) => {
+    if (row.querySelector('picture, img, a[href], h1, h2, h3, h4, h5, h6')) return false;
+    const cells = [...row.children];
+    if (cells.length < 2) return false;
+    const key = (cells[0].textContent || '').trim().toLowerCase();
+    return /(^|\s)colou?r$/.test(key) || key === 'panel colour' || key === 'panel color';
+  });
+  if (!configRow) return null;
+  const value = (configRow.children[1].textContent || '').trim();
+  if (value && COLOUR_RE.test(value)) {
+    block.style.setProperty('--promo-panel-color', value);
+    // Derive the darker arrow-pill shade + a readable text colour from the value.
+    block.style.setProperty('--promo-panel-color-dark', `color-mix(in srgb, ${value} 78%, black)`);
+    block.style.setProperty(
+      '--promo-panel-text',
+      `oklch(from ${value} clamp(0, (0.62 - l) * 1000, 1) 0 0)`,
+    );
+  }
+  return configRow;
+}
+
 let carouselId = 0;
 export default async function decorate(block) {
   carouselId += 1;
   block.setAttribute('id', `carousel-promo-${carouselId}`);
+
+  // Consume an optional "Panel color" config row before partitioning slides.
+  const colourRow = readColourConfig(block);
+  if (colourRow) colourRow.remove();
+
   const allRows = [...block.querySelectorAll(':scope > div')];
   const heroRows = allRows.filter((r) => !isPromoRow(r));
   const promoRows = allRows.filter(isPromoRow);
