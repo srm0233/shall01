@@ -225,12 +225,16 @@
         "component": "select",
         "name": "classes",
         "value": "",
-        "label": "Panel color",
-        "description": "Solid colour of the hero's text panel. Defaults to brand blue.",
+        "label": "Default panel color (fallback)",
+        "description": "Optional fallback panel colour for slides that don't set their own. Per slide, add a line with a hex colour (e.g. #c2185b) to override. Slides with no colour (and no fallback) show a full-width image.",
         "options": [
           {
-            "name": "Brand blue (default)",
+            "name": "None (full-width images)",
             "value": ""
+          },
+          {
+            "name": "Brand blue",
+            "value": "blue"
           },
           {
             "name": "Green",

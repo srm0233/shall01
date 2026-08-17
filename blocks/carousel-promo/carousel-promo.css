@@ -316,9 +316,9 @@
     height: 100%;
   }
 
-  /* 50/50 split slide: solid colour panel on the left, image on the right —
-     matching albertsons.com. No text-over-image shadow. */
-  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide {
+  /* 50/50 split slide (only when the slide has a colour panel): solid colour on
+     the left, image on the right — matching albertsons.com. No text shadow. */
+  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide-split {
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: stretch;
@@ -327,7 +327,7 @@
 
   /* Right half: the image fills its own column (picture is absolute-positioned
      against this cell). */
-  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide .carousel-promo-slide-image {
+  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide-split .carousel-promo-slide-image {
     position: relative;
     grid-column: 2;
     grid-row: 1;
@@ -335,9 +335,9 @@
     overflow: hidden;
   }
 
-  /* Left half: solid brand-blue panel with heading, subtext and CTA. Text is
+  /* Left half: solid colour panel with heading, subtext and CTA. Text is
      left-aligned and vertically centred, like the screenshot. */
-  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide .carousel-promo-slide-content {
+  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide-split .carousel-promo-slide-content {
     grid-column: 1;
     grid-row: 1;
     display: flex;
@@ -354,7 +354,7 @@
     color: var(--promo-panel-text);
   }
 
-  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide .carousel-promo-slide-content h2 {
+  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide-split .carousel-promo-slide-content h2 {
     margin: 0;
     font-family: var(--heading-font-family);
     font-weight: 800;
@@ -363,7 +363,7 @@
     color: var(--promo-panel-text);
   }
 
-  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide .carousel-promo-slide-content > p {
+  .carousel-promo .carousel-promo-bento.has-rail .carousel-promo-slide-split .carousel-promo-slide-content > p {
     margin: 0;
     font-size: var(--body-font-size-l, 20px);
     line-height: 1.4;
