@@ -287,6 +287,12 @@
   text-underline-offset: 3px;
 }
 
+/* The "Plan a picnic" (first) card's peach panel uses dark ink text, but its
+   "Shop now" CTA should read white. */
+.carousel-promo .carousel-promo-card:first-child .carousel-promo-card-content a:any-link {
+  color: #fff;
+}
+
 @media (width >= 900px) {
   /* carousel ~2/3, rail ~1/3; rail height drives the shared row */
   .carousel-promo .carousel-promo-bento.has-rail {
