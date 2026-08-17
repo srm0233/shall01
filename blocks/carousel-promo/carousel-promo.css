@@ -398,10 +398,9 @@
   text-decoration: none;
 }
 
-/* Pair the prev/next arrows together in a solid dark-navy pill at the
-   bottom-left, like the screenshot. The pill uses a fixed dark navy (not the
-   panel-derived shade) so it stays clearly visible on any panel colour,
-   including the brand-blue default. */
+/* Pair the prev/next arrows together in a light, translucent pill at the
+   bottom-left. Light grey / semi-transparent so it sits softly over the panel
+   or photo; dark chevrons keep the arrows legible. */
 .carousel-promo .carousel-promo-bento .carousel-promo-navigation-buttons {
   inset: auto auto 24px 48px;
   transform: none;
@@ -409,8 +408,8 @@
   width: auto;
   padding: 8px 10px;
   border-radius: 999px;
-  background-color: #0a2540; /* deep navy pill */
-  box-shadow: 0 2px 8px rgb(0 0 0 / 25%);
+  background-color: rgb(255 255 255 / 65%);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
   z-index: 3;
 }
 
@@ -418,17 +417,17 @@
   width: 32px;
   height: 32px;
   background-color: transparent;
-  color: #fff;
+  color: var(--brand-ink, #2a2928);
 }
 
 .carousel-promo .carousel-promo-bento .carousel-promo-navigation-buttons button:hover,
 .carousel-promo .carousel-promo-bento .carousel-promo-navigation-buttons button:focus-visible {
-  background-color: rgb(255 255 255 / 20%);
+  background-color: rgb(0 0 0 / 8%);
 }
 
-/* Draw the arrows as clean chevrons (white, centred) inside the pill. */
+/* Draw the arrows as clean dark chevrons (centred) inside the light pill. */
 .carousel-promo .carousel-promo-bento .carousel-promo-navigation-buttons button::after {
-  border-color: #fff;
+  border-color: var(--brand-ink, #2a2928);
   border-width: 2px;
   height: 10px;
   width: 10px;
