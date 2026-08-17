@@ -169,22 +169,41 @@ function readColourConfig(block) {
 const SLIDE_COLOUR_RE = /^(?:colou?r\s*[:=]\s*)?(#[0-9a-f]{3,8}|(?:rgb|hsl)a?\([\d\s.,%/]+\))$/i;
 const SLIDE_COLOUR_NAMED_RE = /^colou?r\s*[:=]\s*([a-z]+)$/i;
 
-/* Pull an optional per-slide colour out of a slide row. An author sets a slide
-   colour by adding a paragraph that is just a hex/rgb value (e.g. "#c2185b") or
-   a labelled "Color: <value>" line. Returns the colour string, or null, and
-   removes the marker paragraph so it doesn't render as body text. */
+/* Match a colour string, returning the value or null. */
+function parseColour(text) {
+  const t = (text || '').trim();
+  const m = t.match(SLIDE_COLOUR_RE) || t.match(SLIDE_COLOUR_NAMED_RE);
+  return m ? m[1] : null;
+}
+
+/* Pull an optional per-slide colour out of a slide row and remove its source so
+   it never renders. Two authoring paths, checked in order:
+   1) The "Panel color (hex)" field — a dedicated 3rd cell in the slide row
+      (Universal Editor model). A slide row with 3 cells: [image][text][colour].
+   2) A convenience inline marker — a paragraph that is just a hex/rgb value or
+      a "Color: <value>" line (handy in the plain doc/table view).
+   Returns the colour string or null. */
 function takeSlideColour(row) {
+  const cells = [...row.querySelectorAll(':scope > div')];
+  // 1) dedicated colour cell (only present when authored via the UE field)
+  if (cells.length >= 3) {
+    const colourCell = cells[cells.length - 1];
+    if (!colourCell.querySelector('picture, img, a, h1, h2, h3, h4, h5, h6')) {
+      const value = parseColour(colourCell.textContent);
+      colourCell.remove(); // drop it so createSlide doesn't treat it as content
+      if (value) return value;
+    }
+  }
+  // 2) inline marker paragraph
   const ps = [...row.querySelectorAll(':scope > div > p, :scope > p')];
   const marker = ps.find((p) => {
     if (p.querySelector('a, picture, img, strong, em')) return false;
-    const t = (p.textContent || '').trim();
-    return SLIDE_COLOUR_RE.test(t) || SLIDE_COLOUR_NAMED_RE.test(t);
+    return !!parseColour(p.textContent);
   });
   if (!marker) return null;
-  const t = marker.textContent.trim();
-  const m = t.match(SLIDE_COLOUR_RE) || t.match(SLIDE_COLOUR_NAMED_RE);
+  const value = parseColour(marker.textContent);
   marker.remove();
-  return m[1];
+  return value;
 }
 
 let carouselId = 0;

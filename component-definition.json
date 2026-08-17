@@ -119,7 +119,7 @@
             "da": {
               "name": "carousel-promo-item",
               "rows": 1,
-              "columns": 2,
+              "columns": 3,
               "fields": [
                 {
                   "name": "image",
@@ -132,6 +132,10 @@
                 {
                   "name": "text",
                   "selector": "div:nth-child(2)"
+                },
+                {
+                  "name": "panelColor",
+                  "selector": "div:nth-child(3)"
                 }
               ]
             }

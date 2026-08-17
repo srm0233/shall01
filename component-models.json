@@ -280,6 +280,14 @@
         "label": "Text",
         "valueType": "string",
         "description": "Heading, description and CTA link for the slide."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "panelColor",
+        "label": "Panel color (hex)",
+        "value": "",
+        "description": "Optional. A CSS colour for this slide's panel, e.g. #c2185b or rgb(0 68 170). Leave blank to use the block default."
       }
     ]
   },
