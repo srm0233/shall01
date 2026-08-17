@@ -1,0 +1,72 @@
+{
+  "definitions": [
+    {
+      "title": "Promo Banner",
+      "id": "promo-banner",
+      "model": "promo-banner",
+      "plugins": {
+        "da": {
+          "name": "promo-banner",
+          "rows": 3,
+          "columns": 2,
+          "fields": [
+            { "name": "backgroundColor", "selector": "div:nth-child(1)>div:nth-child(2)" },
+            { "name": "imageSide", "selector": "div:nth-child(2)>div:nth-child(2)" },
+            { "name": "image", "selector": "div:nth-child(3)>div:nth-child(1)>picture>img[src]" },
+            { "name": "imageAlt", "selector": "div:nth-child(3)>div:nth-child(1)>picture>img[alt]" },
+            { "name": "text", "selector": "div:nth-child(3)>div:nth-child(2)" }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "promo-banner",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "backgroundColor",
+          "label": "Background color (hex)",
+          "value": "",
+          "description": "Optional. A CSS colour, e.g. #eaf6f6. When set, the image sits on one side and this colour fills behind the text. Leave blank to use the image as a full-width background."
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "imageSide",
+          "label": "Image side",
+          "value": "right",
+          "description": "Which side the image appears on when a background colour is set.",
+          "options": [
+            { "name": "Right", "value": "right" },
+            { "name": "Left", "value": "left" }
+          ]
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Image",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imageAlt",
+          "label": "Image alt text",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "text",
+          "label": "Text",
+          "description": "Title, description, and a CTA link (rendered with a trailing arrow)."
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

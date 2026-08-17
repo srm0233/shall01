@@ -1,0 +1,167 @@
+/* ==========================================================================
+   Promo Banner — full-width two-column teaser.
+   - .promo-banner-split : colour panel behind text on one side, image on the
+     other (author supplies a HEX).
+   - .promo-banner-full  : image is the full-width background, text overlaid
+     (no HEX supplied).
+   ========================================================================== */
+
+.promo-banner {
+  --promo-banner-color: var(--brand-section-grey, #f2f2f2);
+  --promo-banner-text: var(--brand-ink, #2a2928);
+  --promo-banner-min-h: 200px;
+
+  position: relative;
+  display: grid;
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: var(--promo-banner-min-h);
+  isolation: isolate;
+}
+
+/* --- Media --- */
+.promo-banner .promo-banner-media {
+  overflow: hidden;
+}
+
+.promo-banner .promo-banner-media :is(picture, img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --- Content --- */
+.promo-banner .promo-banner-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 32px 40px;
+  color: var(--promo-banner-text);
+  z-index: 1;
+}
+
+.promo-banner .promo-banner-content :is(h1, h2, h3, h4) {
+  margin: 0;
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  line-height: 1.15;
+  color: inherit;
+}
+
+.promo-banner .promo-banner-content p {
+  margin: 0;
+  font-size: var(--body-font-size-m, 16px);
+  line-height: 1.4;
+  color: inherit;
+}
+
+/* CTA: link with a trailing arrow */
+.promo-banner .promo-banner-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-weight: 700;
+  color: inherit;
+  text-decoration: none;
+}
+
+.promo-banner .promo-banner-cta::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border: 2px solid currentcolor;
+  border-bottom: 0;
+  border-left: 0;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.promo-banner .promo-banner-cta:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.promo-banner .promo-banner-cta:hover::after {
+  transform: translateX(2px) rotate(45deg);
+}
+
+/* ==========================================================================
+   SPLIT mode: colour panel + image side by side (author supplied a HEX).
+   ========================================================================== */
+.promo-banner.promo-banner-split {
+  background-color: var(--promo-banner-color);
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+}
+
+/* default: image on the right, text on the left */
+.promo-banner.promo-banner-split .promo-banner-content {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.promo-banner.promo-banner-split .promo-banner-media {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+/* image on the left, text on the right */
+.promo-banner.promo-banner-split.promo-banner-image-left .promo-banner-content {
+  grid-column: 2;
+}
+
+.promo-banner.promo-banner-split.promo-banner-image-left .promo-banner-media {
+  grid-column: 1;
+}
+
+/* ==========================================================================
+   FULL mode: image is the full-width background, text overlaid on top.
+   ========================================================================== */
+/* stylelint-disable no-descending-specificity -- full-mode rules intentionally
+   follow the split-mode rules; both are single-purpose and don't conflict. */
+.promo-banner.promo-banner-full {
+  grid-template-columns: 1fr;
+}
+
+.promo-banner.promo-banner-full .promo-banner-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.promo-banner.promo-banner-full .promo-banner-content {
+  grid-column: 1;
+  grid-row: 1;
+  width: min(60%, 620px);
+}
+/* stylelint-enable no-descending-specificity */
+
+/* mobile: split stacks to a single column (colour panel on top, image below) */
+@media (width < 600px) {
+  .promo-banner.promo-banner-split {
+    grid-template-columns: 1fr;
+  }
+
+  .promo-banner.promo-banner-split .promo-banner-content,
+  .promo-banner.promo-banner-split.promo-banner-image-left .promo-banner-content {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .promo-banner.promo-banner-split .promo-banner-media,
+  .promo-banner.promo-banner-split.promo-banner-image-left .promo-banner-media {
+    grid-column: 1;
+    grid-row: 2;
+    min-height: 160px;
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  .promo-banner.promo-banner-full .promo-banner-content {
+    width: auto;
+  }
+}
