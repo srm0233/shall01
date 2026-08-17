@@ -1,5 +1,8 @@
 import { moveInstrumentation } from '../../ue/scripts/ue-utils.js';
 
+/* Carousel promo hero: rotating slides + promo rail, with an author-selectable
+   panel colour (preset variant classes or a "Panel color" config row). */
+
 /* This project has no placeholders module; use inline English defaults. */
 const placeholders = {
   carousel: 'Carousel',
