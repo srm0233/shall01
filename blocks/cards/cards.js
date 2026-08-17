@@ -340,13 +340,20 @@ function decorateProduct(block) {
     if (approx) body.append(createTag('p', { class: 'cards-product-approx' }, approx));
     if (priceHTML) {
       const price = createTag('p', { class: 'cards-product-price' });
-      // The source repeats each value twice (an a11y copy + a visible copy),
-      // e.g. "Your Price $2.50 $2.50Original Price $4.49 $4.49". Strip the
-      // "Your/Original Price" labels, then collapse the duplicated amount.
+      // The source repeats each value twice (an a11y copy + a visible copy) and
+      // wraps the original price in a <del> that arrives HTML-escaped, e.g.
+      // "Your Price $2.50 $2.50&lt;del&gt;Original Price $4.49 $4.49&lt;/del&gt;".
+      // 1) un-escape the <del> tags so the original price strikes through;
+      // 2) drop the "Your/Original Price" labels; 3) collapse the doubled
+      // amount ("$4.49 $4.49" -> "$4.49"). Add a space before <del> so the
+      // sale and original prices don't run together.
       price.innerHTML = priceHTML
+        .replace(/&lt;(\/?)del&gt;/gi, '<$1del>')
+        .replace(/<del>/i, ' <del>')
         .replace(/your price/ig, '')
         .replace(/original price/ig, '')
         .replace(/(\$\d[\d.,]*)\s+\1(?!\d)/g, '$1')
+        .replace(/\s{2,}/g, ' ')
         .trim();
       body.append(price);
     }
