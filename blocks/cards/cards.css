@@ -254,3 +254,980 @@
     max-height: 300px;
   }
 }
+
+/* ==========================================================================
+   Cards (Product) — Albertsons-style horizontal product carousel variant.
+   ========================================================================== */
+
+.cards.product {
+  position: relative;
+  padding: 0 var(--space-l, 24px);
+  max-width: none;
+}
+
+.cards.product .cards-product-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-m, 16px);
+  margin-bottom: var(--space-m, 16px);
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  font-size: var(--heading-font-size-m, 22px);
+  color: var(--brand-ink, #2a2928);
+}
+
+.cards.product .cards-product-header a:any-link {
+  font-size: var(--body-font-size-s, 14px);
+  font-weight: 600;
+  color: var(--brand-blue, #04a);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cards.product .cards-product-viewport {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.cards.product .cards-product-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.cards.product .cards-product-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: var(--space-l, 24px);
+}
+
+/* card — override default cards li chrome (no border/shadow/hover-lift) */
+.cards.product .cards-card {
+  flex: 0 0 auto;
+  width: 220px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+  transition: none;
+}
+
+.cards.product .cards-card:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.cards.product .cards-card-image {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.cards.product .cards-card-image :is(img, picture) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.cards.product .cards-product-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #e6f0ff;
+  color: var(--brand-blue-dark, #036);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.cards.product .cards-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 0 0;
+  margin: 0;
+}
+
+.cards.product .cards-product-cta {
+  display: block;
+  text-align: center;
+  background: var(--brand-blue, #04a);
+  color: #fff;
+  font-weight: 700;
+  font-size: var(--body-font-size-s, 14px);
+  padding: 12px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  margin-bottom: 6px;
+}
+
+.cards.product .cards-product-cta:hover {
+  background: var(--brand-blue-dark, #036);
+}
+
+.cards.product .cards-product-approx {
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-gray-600, #636363);
+}
+
+.cards.product .cards-product-price {
+  margin: 0;
+  font-weight: 700;
+  font-size: var(--body-font-size-m, 16px);
+  color: var(--brand-ink, #2a2928);
+}
+
+.cards.product .cards-product-price del {
+  margin-left: 6px;
+  font-weight: 400;
+  color: var(--color-gray-500, #7d7d7d);
+}
+
+.cards.product .cards-product-title {
+  color: var(--brand-ink, #2a2928);
+  font-size: var(--body-font-size-s, 14px);
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+.cards.product .cards-product-title:hover {
+  text-decoration: underline;
+}
+
+.cards.product .cards-product-snap {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--brand-blue, #04a);
+  letter-spacing: 0.5px;
+}
+
+.cards.product .cards-product-nav {
+  position: absolute;
+  top: 120px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--brand-border, #e2e2e2);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--brand-ink, #2a2928);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+  z-index: 2;
+}
+
+.cards.product .cards-product-nav:hover {
+  border-color: var(--brand-blue, #04a);
+  color: var(--brand-blue, #04a);
+}
+
+.cards.product .cards-product-nav-prev { left: -4px; }
+.cards.product .cards-product-nav-next { right: -4px; }
+
+.cards.product .cards-product-nav::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border: 2px solid currentcolor;
+  border-bottom: 0;
+  border-left: 0;
+}
+
+.cards.product .cards-product-nav-prev::after { transform: translateX(2px) rotate(-135deg); }
+.cards.product .cards-product-nav-next::after { transform: translateX(-2px) rotate(45deg); }
+
+@media (width >= 900px) {
+  .cards.product .cards-card { width: 240px; }
+}
+
+/* ==========================================================================
+   "category" variant: Albertsons "Shop by category" tile grid. Round image
+   tiles with a label beneath, wrapping responsively.
+   ========================================================================== */
+
+.cards.category {
+  display: block;
+  max-width: none;
+}
+
+.cards.category .cards-category-header h2 {
+  margin: 0 0 var(--space-m, 16px);
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  color: var(--brand-ink, #2a2928);
+}
+
+.cards.category .cards-category-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-m, 16px) var(--space-s, 8px);
+  max-width: none;
+}
+
+.cards.category .cards-category-tile {
+  border: 0;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.cards.category .cards-category-tile:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.cards.category .cards-category-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-s, 8px);
+  text-align: center;
+  color: var(--brand-ink, #2a2928);
+  text-decoration: none;
+}
+
+.cards.category .cards-category-image {
+  display: block;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--brand-section-grey, #f2f2f2);
+}
+
+.cards.category .cards-category-image :is(img, picture) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.cards.category .cards-category-link:hover .cards-category-image {
+  box-shadow: 0 0 0 2px var(--brand-blue, #04a);
+}
+
+.cards.category .cards-category-label {
+  font-size: var(--body-font-size-s, 14px);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.cards.category .cards-category-link:hover .cards-category-label {
+  color: var(--brand-blue, #04a);
+}
+
+/* Collapsed state: show two rows only, hide the overflow tiles. The nth-child
+   thresholds match the column count at each breakpoint (2 rows = 2 x cols).
+   The .cards-category-expanded modifier (toggled by the "View More" button)
+   drops these rules so every tile shows. */
+.cards.category:not(.cards-category-expanded) .cards-category-tile:nth-child(n + 7) {
+  display: none;
+}
+
+.cards.category .cards-category-more {
+  display: inline-block;
+  margin-top: var(--space-m, 16px);
+  padding: 10px 24px;
+  border: 1px solid var(--brand-blue, #04a);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--brand-blue, #04a);
+  font-weight: 700;
+  font-size: var(--body-font-size-s, 14px);
+  cursor: pointer;
+}
+
+.cards.category .cards-category-more:hover {
+  background: var(--brand-blue, #04a);
+  color: #fff;
+}
+
+@media (width >= 600px) {
+  .cards.category .cards-category-track {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .cards.category .cards-category-image {
+    width: 112px;
+    height: 112px;
+  }
+
+  /* 5 columns x 2 rows = 10 tiles visible when collapsed */
+  .cards.category:not(.cards-category-expanded) .cards-category-tile:nth-child(n + 7) {
+    display: revert;
+  }
+
+  .cards.category:not(.cards-category-expanded) .cards-category-tile:nth-child(n + 11) {
+    display: none;
+  }
+}
+
+@media (width >= 900px) {
+  .cards.category .cards-category-track {
+    grid-template-columns: repeat(8, 1fr);
+  }
+
+  /* 8 columns x 2 rows = 16 tiles visible when collapsed */
+  .cards.category:not(.cards-category-expanded) .cards-category-tile:nth-child(n + 11) {
+    display: revert;
+  }
+
+  .cards.category:not(.cards-category-expanded) .cards-category-tile:nth-child(n + 17) {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   "recipe" variant: Albertsons meal/bundle carousel. Cream card with a hero
+   photo, a 2x2 grid of ingredient thumbnails, and a title + arrow footer.
+   ========================================================================== */
+
+.cards.recipe {
+  display: block;
+  position: relative;
+  max-width: none;
+}
+
+.cards.recipe .cards-recipe-header {
+  margin-bottom: var(--space-m, 16px);
+}
+
+.cards.recipe .cards-recipe-header :is(h2, h3, p, strong) {
+  margin: 0;
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  color: var(--brand-ink, #2a2928);
+}
+
+.cards.recipe .cards-recipe-viewport {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cards.recipe .cards-recipe-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.cards.recipe .cards-recipe-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: var(--space-m, 16px);
+  max-width: none;
+}
+
+.cards.recipe .cards-recipe-card {
+  flex: 0 0 280px;
+  border: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fdf3e3; /* warm cream */
+  box-shadow: none;
+  scroll-snap-align: start;
+}
+
+.cards.recipe .cards-recipe-card:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.cards.recipe .cards-recipe-link {
+  display: flex;
+  flex-direction: column;
+  color: var(--brand-ink, #2a2928);
+  text-decoration: none;
+}
+
+.cards.recipe .cards-recipe-hero {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+.cards.recipe .cards-recipe-hero :is(img, picture) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cards.recipe .cards-recipe-thumbs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 12px 16px 4px;
+}
+
+.cards.recipe .cards-recipe-thumb {
+  display: block;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.cards.recipe .cards-recipe-thumb :is(img, picture) {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.cards.recipe .cards-recipe-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-s, 8px);
+  padding: 12px 16px 20px;
+}
+
+.cards.recipe .cards-recipe-title {
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  font-size: var(--body-font-size-m, 16px);
+  line-height: 1.3;
+  color: var(--brand-ink, #2a2928);
+}
+
+.cards.recipe .cards-recipe-arrow {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  position: relative;
+}
+
+.cards.recipe .cards-recipe-arrow::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--brand-ink, #2a2928);
+  border-bottom: 0;
+  border-left: 0;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.cards.recipe .cards-recipe-nav {
+  position: absolute;
+  top: 40%;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--brand-border, #e2e2e2);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--brand-ink, #2a2928);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+  z-index: 2;
+}
+
+.cards.recipe .cards-recipe-nav:hover {
+  border-color: var(--brand-blue, #04a);
+  color: var(--brand-blue, #04a);
+}
+
+.cards.recipe .cards-recipe-nav-prev { left: -4px; }
+.cards.recipe .cards-recipe-nav-next { right: -4px; }
+
+.cards.recipe .cards-recipe-nav::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border: 2px solid currentcolor;
+  border-bottom: 0;
+  border-left: 0;
+}
+
+.cards.recipe .cards-recipe-nav-prev::after { transform: translateX(2px) rotate(-135deg); }
+.cards.recipe .cards-recipe-nav-next::after { transform: translateX(-2px) rotate(45deg); }
+
+@media (width >= 900px) {
+  .cards.recipe .cards-recipe-card { flex-basis: 320px; }
+}
+
+/* ==========================================================================
+   "recipe-b" variant: Albertsons recipe carousel (Breakfast champions). Photo
+   card with a "N servings" badge overlaid top-right, then a title and an
+   "Est $X / serving" price beneath.
+   ========================================================================== */
+
+.cards.recipe-b {
+  display: block;
+  position: relative;
+  max-width: none;
+}
+
+.cards.recipe-b .cards-recipeb-header {
+  margin-bottom: var(--space-m, 16px);
+}
+
+.cards.recipe-b .cards-recipeb-header :is(h2, h3, p, strong) {
+  margin: 0;
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  color: var(--brand-ink, #2a2928);
+}
+
+.cards.recipe-b .cards-recipeb-viewport {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cards.recipe-b .cards-recipeb-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.cards.recipe-b .cards-recipeb-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: var(--space-m, 16px);
+  max-width: none;
+}
+
+.cards.recipe-b .cards-recipeb-card {
+  flex: 0 0 210px;
+  border: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: transparent;
+  box-shadow: none;
+  scroll-snap-align: start;
+}
+
+.cards.recipe-b .cards-recipeb-card:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.cards.recipe-b .cards-recipeb-link {
+  display: flex;
+  flex-direction: column;
+  color: var(--brand-ink, #2a2928);
+  text-decoration: none;
+}
+
+.cards.recipe-b .cards-recipeb-image {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--brand-section-grey, #f2f2f2);
+}
+
+.cards.recipe-b .cards-recipeb-image :is(img, picture) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cards.recipe-b .cards-recipeb-servings {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #fff;
+  color: var(--brand-ink, #2a2928);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 15%);
+}
+
+.cards.recipe-b .cards-recipeb-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 2px 0;
+}
+
+.cards.recipe-b .cards-recipeb-title {
+  margin: 0;
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  font-size: var(--body-font-size-s, 14px);
+  line-height: 1.35;
+  color: var(--brand-ink, #2a2928);
+}
+
+.cards.recipe-b .cards-recipeb-price {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand-blue, #04a);
+}
+
+.cards.recipe-b .cards-recipeb-price del {
+  margin-left: 6px;
+  font-weight: 400;
+  color: var(--color-gray-500, #7d7d7d);
+}
+
+.cards.recipe-b .cards-recipeb-nav {
+  position: absolute;
+  top: 40%;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--brand-border, #e2e2e2);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--brand-ink, #2a2928);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+  z-index: 2;
+}
+
+.cards.recipe-b .cards-recipeb-nav:hover {
+  border-color: var(--brand-blue, #04a);
+  color: var(--brand-blue, #04a);
+}
+
+.cards.recipe-b .cards-recipeb-nav-prev { left: -4px; }
+.cards.recipe-b .cards-recipeb-nav-next { right: -4px; }
+
+.cards.recipe-b .cards-recipeb-nav::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border: 2px solid currentcolor;
+  border-bottom: 0;
+  border-left: 0;
+}
+
+.cards.recipe-b .cards-recipeb-nav-prev::after { transform: translateX(2px) rotate(-135deg); }
+.cards.recipe-b .cards-recipeb-nav-next::after { transform: translateX(-2px) rotate(45deg); }
+
+@media (width >= 900px) {
+  .cards.recipe-b .cards-recipeb-card { flex-basis: 230px; }
+}
+
+/* ==========================================================================
+   "feature" variant (Categories A): up to 4 large image cards + caption.
+   Fewer than 4 -> the last card grows to fill the row.
+   ========================================================================== */
+
+.cards.feature {
+  display: block;
+  max-width: none;
+}
+
+.cards.feature .cards-feature-header {
+  margin-bottom: var(--space-m, 16px);
+}
+
+.cards.feature .cards-feature-header :is(h2, h3, p, strong) {
+  margin: 0;
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  color: var(--brand-ink, #2a2928);
+}
+
+.cards.feature .cards-feature-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-m, 16px);
+  max-width: none;
+}
+
+.cards.feature .cards-feature-card {
+  border: 0;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.cards.feature .cards-feature-card:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.cards.feature .cards-feature-link {
+  display: block;
+  color: var(--brand-ink, #2a2928);
+  text-decoration: none;
+}
+
+.cards.feature .cards-feature-image {
+  display: block;
+  aspect-ratio: 1 / 1;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--brand-section-grey, #f2f2f2);
+}
+
+.cards.feature .cards-feature-image :is(img, picture) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.cards.feature .cards-feature-link:hover .cards-feature-image :is(img, picture) {
+  transform: scale(1.04);
+}
+
+.cards.feature .cards-feature-caption {
+  display: block;
+  margin-top: var(--space-s, 8px);
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  font-size: var(--body-font-size-l, 18px);
+  color: var(--brand-ink, #2a2928);
+}
+
+@media (width >= 900px) {
+  .cards.feature .cards-feature-track {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* Fewer than 4 cards: let the last card span the leftover columns so the
+     row stays full-width, matching the "wider last card" behaviour. */
+  .cards.feature .cards-feature-track[data-count='1'] { grid-template-columns: 1fr; }
+  .cards.feature .cards-feature-track[data-count='2'] { grid-template-columns: repeat(2, 1fr); }
+
+  .cards.feature .cards-feature-track[data-count='3'] {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cards.feature .cards-feature-track[data-count='3'] .cards-feature-card:last-child {
+    grid-column: span 1;
+  }
+
+  /* aspect ratio widens the final card when the grid has spare room */
+  .cards.feature .cards-feature-track:not([data-count='4']) .cards-feature-card:last-child .cards-feature-image {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+/* ==========================================================================
+   "coupon" variant (Coupons & deals carousel). White bordered cards: badge
+   line, title + description + offer-details link with product image, then a
+   footer with a blue "Clip Coupon" pill and usage/expiry text.
+   ========================================================================== */
+
+.cards.coupon {
+  display: block;
+  position: relative;
+  max-width: none;
+}
+
+.cards.coupon .cards-coupon-header {
+  margin-bottom: var(--space-m, 16px);
+}
+
+.cards.coupon .cards-coupon-header :is(h2, h3, p, strong) {
+  margin: 0;
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  color: var(--brand-ink, #2a2928);
+}
+
+.cards.coupon .cards-coupon-viewport {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cards.coupon .cards-coupon-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.cards.coupon .cards-coupon-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: var(--space-m, 16px);
+  max-width: none;
+}
+
+.cards.coupon .cards-coupon-card {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid var(--brand-border, #e2e2e2);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: none;
+  padding: 16px;
+  scroll-snap-align: start;
+}
+
+.cards.coupon .cards-coupon-card:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--brand-border, #e2e2e2);
+}
+
+.cards.coupon .cards-coupon-badge {
+  display: inline-block;
+  font-weight: 700;
+  font-size: var(--body-font-size-s, 14px);
+  color: var(--brand-ink, #2a2928);
+}
+
+.cards.coupon .cards-coupon-body {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  min-height: 96px;
+}
+
+.cards.coupon .cards-coupon-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cards.coupon .cards-coupon-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: var(--body-font-size-s, 14px);
+  color: var(--brand-ink, #2a2928);
+}
+
+.cards.coupon .cards-coupon-desc {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-gray-600, #636363);
+}
+
+.cards.coupon .cards-coupon-details {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand-blue, #04a);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cards.coupon .cards-coupon-image {
+  flex: 0 0 72px;
+  width: 72px;
+  height: 72px;
+  display: block;
+  overflow: hidden;
+}
+
+.cards.coupon .cards-coupon-image :is(img, picture) {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.cards.coupon .cards-coupon-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.cards.coupon .cards-coupon-clip {
+  flex-shrink: 0;
+  background: var(--brand-blue, #04a);
+  color: #fff;
+  font-weight: 700;
+  font-size: var(--body-font-size-s, 14px);
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 22px;
+  cursor: pointer;
+}
+
+.cards.coupon .cards-coupon-clip:hover {
+  background: var(--brand-blue-dark, #036);
+}
+
+.cards.coupon .cards-coupon-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+  color: var(--color-gray-600, #636363);
+}
+
+.cards.coupon .cards-coupon-nav {
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--brand-border, #e2e2e2);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--brand-ink, #2a2928);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+  z-index: 2;
+}
+
+.cards.coupon .cards-coupon-nav:hover {
+  border-color: var(--brand-blue, #04a);
+  color: var(--brand-blue, #04a);
+}
+
+.cards.coupon .cards-coupon-nav-prev { left: -4px; }
+.cards.coupon .cards-coupon-nav-next { right: -4px; }
+
+.cards.coupon .cards-coupon-nav::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border: 2px solid currentcolor;
+  border-bottom: 0;
+  border-left: 0;
+}
+
+.cards.coupon .cards-coupon-nav-prev::after { transform: translateX(2px) rotate(-135deg); }
+.cards.coupon .cards-coupon-nav-next::after { transform: translateX(-2px) rotate(45deg); }

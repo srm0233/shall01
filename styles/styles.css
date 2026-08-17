@@ -272,12 +272,8 @@ body {
   display: none;
   margin: 0;
   box-sizing: border-box;
-  background-color: var(--background-color);
-  background-image:
-    radial-gradient(ellipse 80% 50% at 12% 8%,
-      light-dark(rgb(197 160 89 / 9%), rgb(197 160 89 / 4%)) 0%, transparent 60%),
-    radial-gradient(ellipse 55% 40% at 88% 82%,
-      light-dark(rgb(161 79 43 / 6%), rgb(161 79 43 / 3%)) 0%, transparent 50%);
+  background-color: #fff;
+  background-image: none;
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
@@ -295,7 +291,10 @@ body.appear {
 }
 
 header {
-  height: var(--nav-height);
+  /* Header sits in normal flow (not fixed), so it sizes to its own content
+     rather than reserving a fixed --nav-height spacer. min-height keeps a
+     stable height before the nav block hydrates, reducing layout shift. */
+  min-height: var(--nav-height);
 }
 
 header .header,
@@ -606,13 +605,29 @@ main .section.gray {
     text-align: center;
 }
 
-/* section-metadata or block style: spacer utilities – add to section metadata or block styles for readability gaps */
-.spacer-top-s { margin-top: var(--space-s); }
-.spacer-top-m { margin-top: var(--space-m); }
-.spacer-top-l { margin-top: var(--space-l); }
-.spacer-bottom-s { margin-bottom: var(--space-s); }
-.spacer-bottom-m { margin-bottom: var(--space-m); }
-.spacer-bottom-l { margin-bottom: var(--space-l); }
+/* section-metadata or block style: spacer utilities – add to section metadata
+   (Section Style Utils) or block styles for extra readability gaps.
+
+   These must out-specify the base `:is(main, article.article-body) > .section`
+   rule (0,2,1) that sets `padding-block: var(--space-xl)`, otherwise a plain
+   `.spacer-*` (0,1,0) is swamped by that padding and appears to do nothing.
+   We scope to authored sections and add the gap as EXTRA padding on top of the
+   section's existing block padding, so authors reliably see more space. */
+:is(main, article.article-body) > .section.spacer-top-s { padding-block-start: calc(var(--space-xl) + var(--space-s)); }
+:is(main, article.article-body) > .section.spacer-top-m { padding-block-start: calc(var(--space-xl) + var(--space-m)); }
+:is(main, article.article-body) > .section.spacer-top-l { padding-block-start: calc(var(--space-xl) + var(--space-l)); }
+:is(main, article.article-body) > .section.spacer-bottom-s { padding-block-end: calc(var(--space-xl) + var(--space-s)); }
+:is(main, article.article-body) > .section.spacer-bottom-m { padding-block-end: calc(var(--space-xl) + var(--space-m)); }
+:is(main, article.article-body) > .section.spacer-bottom-l { padding-block-end: calc(var(--space-xl) + var(--space-l)); }
+
+/* Also honour the utilities on blocks / non-section elements (e.g. block style
+   options), where there's no base padding to compete with. */
+:where(:not(.section)).spacer-top-s { margin-top: var(--space-s); }
+:where(:not(.section)).spacer-top-m { margin-top: var(--space-m); }
+:where(:not(.section)).spacer-top-l { margin-top: var(--space-l); }
+:where(:not(.section)).spacer-bottom-s { margin-bottom: var(--space-s); }
+:where(:not(.section)).spacer-bottom-m { margin-bottom: var(--space-m); }
+:where(:not(.section)).spacer-bottom-l { margin-bottom: var(--space-l); }
 
 /* section-metadata style=rust: bold brand accent section */
 main > .section.rust {

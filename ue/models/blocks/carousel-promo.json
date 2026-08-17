@@ -1,25 +1,25 @@
 {
   "definitions": [
     {
-      "title": "Cards",
-      "id": "cards",
-      "model": "cards",
-      "filter": "cards",
+      "title": "Carousel Promo",
+      "id": "carousel-promo",
+      "model": "carousel-promo",
+      "filter": "carousel-promo",
       "plugins": {
         "da": {
-          "name": "cards",
+          "name": "carousel-promo",
           "rows": 1,
           "columns": 2
         }
       }
     },
     {
-      "title": "Card Item",
-      "id": "cards-item",
-      "model": "cards-item",
+      "title": "Carousel Promo Slide",
+      "id": "carousel-promo-item",
+      "model": "carousel-promo-item",
       "plugins": {
         "da": {
-          "name": "cards-item",
+          "name": "carousel-promo-item",
           "rows": 1,
           "columns": 2,
           "fields": [
@@ -33,27 +33,26 @@
   ],
   "models": [
     {
-      "id": "cards",
+      "id": "carousel-promo",
       "fields": [
         {
           "component": "select",
           "name": "classes",
-          "label": "Variant",
+          "value": "",
+          "label": "Panel color",
+          "description": "Solid colour of the hero's text panel. Defaults to brand blue.",
           "options": [
-            { "name": "Default", "value": "" },
-            { "name": "Links", "value": "links" },
-            { "name": "Product carousel", "value": "product" },
-            { "name": "Category grid", "value": "category" },
-            { "name": "Recipe carousel", "value": "recipe" },
-            { "name": "Recipe carousel B", "value": "recipe-b" },
-            { "name": "Feature (up to 4)", "value": "feature" },
-            { "name": "Coupon carousel", "value": "coupon" }
+            { "name": "Brand blue (default)", "value": "" },
+            { "name": "Green", "value": "green" },
+            { "name": "Purple", "value": "purple" },
+            { "name": "Peach", "value": "peach" },
+            { "name": "Ink (near-black)", "value": "ink" }
           ]
         }
       ]
     },
     {
-      "id": "cards-item",
+      "id": "carousel-promo-item",
       "fields": [
         {
           "component": "reference",
@@ -61,7 +60,7 @@
           "name": "image",
           "label": "Image",
           "multi": false,
-          "description": "Optional. Block renders without image when empty."
+          "description": "Slide background / promo image."
         },
         {
           "component": "text",
@@ -74,15 +73,16 @@
           "component": "richtext",
           "name": "text",
           "label": "Text",
-          "valueType": "string"
+          "valueType": "string",
+          "description": "Heading, description and CTA link for the slide."
         }
       ]
     }
   ],
   "filters": [
     {
-      "id": "cards",
-      "components": ["cards-item"]
+      "id": "carousel-promo",
+      "components": ["carousel-promo-item"]
     }
   ]
 }
