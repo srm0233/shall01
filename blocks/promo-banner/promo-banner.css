@@ -9,13 +9,13 @@
 .promo-banner {
   --promo-banner-color: var(--brand-section-grey, #f2f2f2);
   --promo-banner-text: var(--brand-ink, #2a2928);
-  --promo-banner-min-h: 200px;
+  --promo-banner-height: 170px;
 
   position: relative;
   display: grid;
   border-radius: 16px;
   overflow: hidden;
-  min-height: var(--promo-banner-min-h);
+  height: var(--promo-banner-height); /* fixed banner height */
   isolation: isolate;
 }
 
@@ -59,13 +59,21 @@
   color: inherit;
 }
 
-/* CTA: link with a trailing arrow */
-.promo-banner .promo-banner-cta {
+/* CTA: plain text link with a trailing arrow. The extra a.button qualifier
+   out-specifies the global button/pill styling so the CTA stays a text link
+   even if the decorate pipeline tagged it as a button. */
+.promo-banner .promo-banner-cta,
+.promo-banner a.promo-banner-cta:any-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: 8px;
+  margin: 8px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
   font-weight: 700;
+  font-size: var(--body-font-size-m, 16px);
   color: inherit;
   text-decoration: none;
 }

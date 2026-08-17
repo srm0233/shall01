@@ -69,14 +69,17 @@ export default function decorate(block) {
     while (textCell.firstChild) content.append(textCell.firstChild);
   }
 
-  // Mark the CTA (last link in the content) so CSS can add the arrow.
+  // Mark the CTA (last link in the content) so CSS can add the arrow. Strip the
+  // pipeline's button styling so it renders as a plain text link with arrow.
   const links = [...content.querySelectorAll('a[href]')];
   const cta = links[links.length - 1];
   if (cta) {
+    cta.classList.remove('button', 'primary', 'secondary');
     cta.classList.add('promo-banner-cta');
-    // If the link is wrapped in its own <p>, tag that too for spacing.
-    if (cta.parentElement && cta.parentElement !== content) {
-      cta.parentElement.classList.add('promo-banner-cta-wrap');
+    const wrap = cta.parentElement;
+    if (wrap && wrap !== content) {
+      wrap.classList.remove('button-container');
+      wrap.classList.add('promo-banner-cta-wrap');
     }
   }
 
