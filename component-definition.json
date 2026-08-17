@@ -84,15 +84,15 @@
               "fields": [
                 {
                   "name": "image",
-                  "selector": "div:nth-child(1)>picture>img[src]"
+                  "selector": "picture>img[src]"
                 },
                 {
                   "name": "imageAlt",
-                  "selector": "div:nth-child(1)>picture>img[alt]"
+                  "selector": "picture>img[alt]"
                 },
                 {
                   "name": "text",
-                  "selector": "div:nth-child(2)"
+                  "selector": ":is(.cards-card-body,.cards-feature-caption,.cards-category-label,.cards-recipe-foot,.cards-recipeb-body,.cards-coupon-info,div:nth-child(2))"
                 }
               ]
             }

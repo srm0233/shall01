@@ -23,9 +23,9 @@
           "rows": 1,
           "columns": 2,
           "fields": [
-            { "name": "image", "selector": "div:nth-child(1)>picture>img[src]" },
-            { "name": "imageAlt", "selector": "div:nth-child(1)>picture>img[alt]" },
-            { "name": "text", "selector": "div:nth-child(2)" }
+            { "name": "image", "selector": "picture>img[src]" },
+            { "name": "imageAlt", "selector": "picture>img[alt]" },
+            { "name": "text", "selector": ":is(.cards-card-body,.cards-feature-caption,.cards-category-label,.cards-recipe-foot,.cards-recipeb-body,.cards-coupon-info,div:nth-child(2))" }
           ]
         }
       }

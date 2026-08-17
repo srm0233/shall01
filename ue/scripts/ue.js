@@ -1,7 +1,26 @@
 import { moveInstrumentation } from './ue-utils.js';
 
+// Re-apply UE instrumentation from the block's original row <div>s onto the
+// decorated card <li>s. Works for the default cards layout (a flat <ul>) and
+// for the Albertsons variants (product/category/recipe/recipe-b/feature/coupon),
+// which nest the <ul> inside a viewport wrapper and may prepend a heading row.
+// The row <div>s and the card <li>s are matched in document order, ignoring any
+// non-card rows (heading) that don't produce an <li>.
+const reinstrumentCards = (blockEl, removedNodes) => {
+  const removedRows = [...removedNodes].filter((n) => n.tagName === 'DIV');
+  const cardEls = [...blockEl.querySelectorAll(':scope li')];
+  if (!cardEls.length) return;
+  // If a heading row was consumed, there will be one more removed row than card;
+  // drop leading rows so the tail lines up card-for-card.
+  const offset = Math.max(0, removedRows.length - cardEls.length);
+  cardEls.forEach((li, i) => {
+    const row = removedRows[i + offset];
+    if (row && !li.getAttribute('data-aue-resource')) moveInstrumentation(row, li);
+  });
+};
+
 const setupObservers = () => {
-  const mutatingBlocks = document.querySelectorAll('div.cards, div.journey-map');
+  const mutatingBlocks = document.querySelectorAll('div.cards, div.journey-map, div.carousel-promo');
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.type === 'childList' && mutation.target.tagName === 'DIV') {
@@ -14,18 +33,14 @@ const setupObservers = () => {
           : mutation.target.attributes['data-aue-component']?.value;
 
         switch (type) {
-          case 'cards':
-            // handle card div > li replacements
-            if (addedElements.length === 1 && addedElements[0].tagName === 'UL') {
-              const ulEl = addedElements[0];
-              const removedDivEl = [...mutation.removedNodes].filter((node) => node.tagName === 'DIV');
-              removedDivEl.forEach((div, index) => {
-                if (index < ulEl.children.length) {
-                  moveInstrumentation(div, ulEl.children[index]);
-                }
-              });
-            }
+          case 'cards': {
+            // The default layout replaces rows with a flat <ul>; the Albertsons
+            // variants nest the <ul> in a viewport wrapper (± a heading row).
+            // Re-instrument by matching rows to card <li>s in document order.
+            const blockEl = mutation.target.closest('.cards') || mutation.target;
+            reinstrumentCards(blockEl, mutation.removedNodes);
             break;
+          }
           case 'cards-image':
             // handle card-image picture replacements
             if (mutation.target.classList.contains('cards-card-image')) {
@@ -48,6 +63,22 @@ const setupObservers = () => {
               }
             }
             break;
+          case 'carousel-promo': {
+            // The hero decorator moves each row's columns into a <li> slide or a
+            // promo-rail card. Re-instrument by matching removed rows to the
+            // rendered slides + cards in document order.
+            const blockEl = mutation.target.closest('.carousel-promo') || mutation.target;
+            const removedRows = [...mutation.removedNodes].filter((n) => n.tagName === 'DIV');
+            const targets = [
+              ...blockEl.querySelectorAll('.carousel-promo-slide'),
+              ...blockEl.querySelectorAll('.carousel-promo-card'),
+            ];
+            targets.forEach((el, i) => {
+              const row = removedRows[i];
+              if (row && !el.getAttribute('data-aue-resource')) moveInstrumentation(row, el);
+            });
+            break;
+          }
           default:
             break;
         }
