@@ -53,10 +53,12 @@ header .nav-wrapper {
   background-color: #fff;
   width: 100%;
   z-index: 1000;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+
+  /* In normal flow at the top of the page (not sticky). The header is a
+     two-row grid on desktop and taller than --nav-height, so a fixed position
+     + fixed-height spacer left it overlapping page content. Static positioning
+     lets it take its natural height and scroll with the page. */
+  position: static;
   border-bottom: 1px solid var(--brand-border);
   box-shadow: none;
 }

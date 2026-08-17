@@ -291,7 +291,10 @@ body.appear {
 }
 
 header {
-  height: var(--nav-height);
+  /* Header sits in normal flow (not fixed), so it sizes to its own content
+     rather than reserving a fixed --nav-height spacer. min-height keeps a
+     stable height before the nav block hydrates, reducing layout shift. */
+  min-height: var(--nav-height);
 }
 
 header .header,
