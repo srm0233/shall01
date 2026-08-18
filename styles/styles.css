@@ -629,6 +629,21 @@ main .section.gray {
 :where(:not(.section)).spacer-bottom-m { margin-bottom: var(--space-m); }
 :where(:not(.section)).spacer-bottom-l { margin-bottom: var(--space-l); }
 
+/* "Disclaimer (14px)" text style: small Nunito Sans body copy for fine print /
+   offer disclaimers. Authors apply it by setting Section Metadata Style to
+   "Disclaimer" (slugified to .section.disclaimer), or the class .disclaimer-text
+   can be used directly (e.g. in fragments). Fixed 14px (not the responsive
+   --body-font-size-s token, which grows to 16px on desktop) so disclaimers stay
+   small everywhere. Targets descendants so it applies to the wrapped text. */
+.disclaimer-text,
+.disclaimer-text :is(p, li, span, a),
+:is(main, article.article-body) > .section.disclaimer,
+:is(main, article.article-body) > .section.disclaimer :is(p, li, span, a) {
+  font-family: "Nunito Sans", "Helvetica Neue", helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
 /* section-metadata style=rust: bold brand accent section */
 main > .section.rust {
   background-color: var(--color-rust);
