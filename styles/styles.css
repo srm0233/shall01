@@ -637,8 +637,8 @@ main .section.gray {
    small everywhere. Targets descendants so it applies to the wrapped text. */
 .disclaimer-text,
 .disclaimer-text :is(p, li, span, a),
-:is(main, article.article-body) > .section.disclaimer,
-:is(main, article.article-body) > .section.disclaimer :is(p, li, span, a) {
+:is(main, article.article-body) .section.disclaimer,
+:is(main, article.article-body) .section.disclaimer :is(p, li, span, a) {
   font-family: "Nunito Sans", "Helvetica Neue", helvetica, arial, sans-serif;
   font-size: 14px;
   line-height: 1.45;
