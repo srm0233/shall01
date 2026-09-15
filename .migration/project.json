@@ -2,9 +2,11 @@
   "type": "da",
   "sites": {
     "shall01": {
+      "libraryUrl": "https://main--shall01--srm0233.aem.page/docs/library/blocks.json",
       "previewOrg": "srm0233",
       "previewSite": "shall01",
-      "libraryUrl": "https://main--shall01--srm0233.aem.page/docs/library/blocks.json"
+      "contentHostUrl": "https://content.da.live/srm0233/shall01/",
+      "botProtected": true
     }
   }
 }

@@ -761,6 +761,82 @@ function decorateCoupon(block) {
   addCarouselNav(block, viewport, 'cards-coupon-nav');
 }
 
+/**
+ * Decorate the "recipe-grid" variant: Albertsons recipe-listing grid (e.g.
+ * /recipes/diet/pescatarian). A static, multi-row responsive GRID of recipe
+ * cards — NOT a carousel. Each card is a thumbnail photo, a title link to the
+ * recipe, and a short meta line ("NN mins", "NNN cal"). Authored rows hold, in
+ * any order: an image cell, a title link, and the meta values (as a list or
+ * separate cells/paragraphs). An optional first heading row is supported.
+ */
+function decorateRecipeGrid(block) {
+  const rows = [...block.children];
+  const headingRow = takeHeadingRow(rows);
+
+  const ul = createTag('ul', { class: 'cards-recipe-grid-track' });
+  rows.forEach((row) => {
+    // Flatten the row's cells into a flat list of field elements.
+    const fields = [];
+    [...row.children].forEach((cell) => {
+      const kids = [...cell.children];
+      if (kids.length) fields.push(...kids);
+      else fields.push(cell);
+    });
+
+    // Title link: the anchor pointing at the recipe detail page.
+    const titleLink = row.querySelector('a[href*="/meal-plans-recipes/"], a[href*="/recipes/"], a[href*="/bundles/"]');
+    const href = titleLink ? titleLink.getAttribute('href') : '#';
+    const title = titleLink ? titleLink.textContent.trim() : '';
+
+    // Image field: the cell carrying a picture/img/Scene7 anchor.
+    const imgField = fields.find((f) => f.querySelector
+      && (f.querySelector('picture') || f.querySelector('img') || f.querySelector('a[href*="/is/image/"]')));
+
+    // Meta tokens: short text such as "25 mins" / "300 cal". Collect from an
+    // authored <ul>/<li> list first, then from any leftover text fields.
+    const meta = [];
+    const metaList = row.querySelector('ul, ol');
+    if (metaList) {
+      [...metaList.querySelectorAll('li')].forEach((li) => {
+        const t = (li.textContent || '').trim();
+        if (t) meta.push(t);
+      });
+    }
+    if (!meta.length) {
+      fields.forEach((f) => {
+        if (f === imgField || (titleLink && f.contains(titleLink))) return;
+        const t = (f.textContent || '').trim();
+        if (t && /\d/.test(t) && /min|cal|hr|hour/i.test(t)) meta.push(t);
+      });
+    }
+
+    const li = createTag('li', { class: 'cards-recipe-grid-card' });
+    moveInstrumentation(row, li); // keep the row editable in Universal Editor
+    const link = createTag('a', { class: 'cards-recipe-grid-link', href });
+
+    const imageWrap = createTag('div', { class: 'cards-recipe-grid-image' });
+    const pic = pictureFrom(imgField, title, 400);
+    if (pic) imageWrap.append(pic);
+    link.append(imageWrap);
+
+    const body = createTag('div', { class: 'cards-recipe-grid-body' });
+    if (title) body.append(createTag('p', { class: 'cards-recipe-grid-title' }, title));
+    if (meta.length) {
+      const metaEl = createTag('ul', { class: 'cards-recipe-grid-meta' });
+      meta.forEach((m) => metaEl.append(createTag('li', {}, m)));
+      body.append(metaEl);
+    }
+    link.append(body);
+
+    li.append(link);
+    ul.append(li);
+  });
+
+  block.replaceChildren();
+  appendHeader(block, headingRow, 'cards-recipe-grid-header');
+  block.append(ul);
+}
+
 export default async function decorate(block) {
   if (block.classList.contains('links')) {
     await decorateLinks(block);
@@ -770,6 +846,8 @@ export default async function decorate(block) {
     decorateProduct(block);
   } else if (block.classList.contains('category')) {
     decorateCategory(block);
+  } else if (block.classList.contains('recipe-grid')) {
+    decorateRecipeGrid(block);
   } else if (block.classList.contains('recipe-b')) {
     decorateRecipeB(block);
   } else if (block.classList.contains('recipe')) {
