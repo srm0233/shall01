@@ -308,6 +308,16 @@ main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a) {
   --recipe-listing: 1;
 }
 
+/* CLS guard: the title + filter-pill block above the grid reflows as web fonts
+   swap in and the plain <ol> restyles into the flex pill row, which shoves the
+   grid down (measured ~0.18 layout shift). Reserve its vertical space so the
+   grid position is stable from first paint. min-height ≈ h1 + margins + one
+   pill row; content taller than this (rare 2-line wrap) still grows gracefully. */
+main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+  .default-content-wrapper:first-child {
+  min-height: 140px;
+}
+
 /* Title band: brand heading, tighter than the global h1 default. */
 main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
   .default-content-wrapper h1 {
@@ -339,6 +349,10 @@ main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-s, 8px);
+
+  /* Pin the pill row height so a font-swap reflow of the pills doesn't shift the
+     grid (single-line pills: 1.4 line-height + 6px*2 padding + 1px borders ≈ 34px). */
+  min-height: 34px;
 }
 
 main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
