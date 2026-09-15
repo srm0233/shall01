@@ -64,6 +64,43 @@ const NON_AUTHORABLE_SELECTORS = [
   '[id^="gamcontainer_"]',
   '.gam-ad-container',
   '[id^="google_ads_iframe_"]',
+
+  // --- RECIPE-DIET-LISTING template chrome (added additively; homepage-safe) ---
+  // The recipe listing page (https://www.albertsons.com/recipes/diet/pescatarian)
+  // is a Next.js page with NO <main> element. Its authorable content lives in
+  // <div id="__next"> (title band h1.css-r0iqig, filter pills nav.css-19uk66z,
+  // and the recipe grid div.-tw-ml-[6px].tw-mb-16). The global site chrome wraps
+  // that content in two sibling containers whose classes happen to be
+  // "main-wrapper www-wrapper nextgen-main-wrapper" (a header/footer shell, NOT
+  // an authorable root). All selectors below were confirmed present in the
+  // recipe page's migration-work/cleaned.html; each is a no-op on the homepage
+  // (WebImporter.DOMUtils.remove skips selectors that match nothing), so this is
+  // additive and does not change homepage behavior.
+
+  // cleaned.html: <div id="aci-header" class="main-wrapper www-wrapper nextgen-main-wrapper">
+  //   wraps the ENTIRE global header (utility nav, category t_nav dropdowns,
+  //   search/account/cart, unified-header, plus header-scoped sign-in/order
+  //   modals). Removing the whole wrapper strips far more chrome than the
+  //   homepage's class-based '.unified-header' selector alone.
+  '#aci-header',
+  // cleaned.html: <div id="aci-footer" class="main-wrapper www-wrapper nextgen-main-wrapper">
+  //   wraps the pds-survey, unified-footer-v2, <footer class="body-wrapper-footer">,
+  //   #footerNav, and the full stack of app modals (miniCart, fulfillment,
+  //   session-timeout, splash, progressive-profile, etc.). Non-authorable.
+  '#aci-footer',
+  // cleaned.html: <div id="app-modals"> — empty app modal/dialog/toast mount
+  //   point, sibling of #__next inside #sticky-bar-scroll-area. Non-authorable.
+  '#app-modals',
+  // cleaned.html: breadcrumb <nav class="css-1m2izh6"> ("Recipes / Pescatarian").
+  //   Navigational chrome per the authoring analysis — remove. (The filter pills
+  //   <nav class="css-19uk66z"> are default content and are intentionally KEPT.)
+  'nav.css-1m2izh6',
+  // cleaned.html: body-level custom-element modal mounts rendered outside #__next.
+  //   <popup-wrapper id="popup-wrapper_0">, <profile-completion id="profile-completion_0">,
+  //   <special-occasions id="special-occasions_0">. Non-authorable app chrome.
+  'popup-wrapper',
+  'profile-completion',
+  'special-occasions',
 ];
 
 export default function transform(hookName, element, payload) {
@@ -113,6 +150,33 @@ export default function transform(hookName, element, payload) {
     // outside <main>; these never carry authorable content. Counts verified in
     // cleaned.html.
     WebImporter.DOMUtils.remove(element, ['iframe']);
+
+    // Remove tracking-pixel images (1x1 beacons that leak through as <img>): the
+    // Bing UET pixel (bat.bing.com), Google/DoubleClick, and Facebook. These are
+    // analytics beacons, never authorable imagery. Verified: recipe page carries
+    // a bat.bing.com pixel just before the footer.
+    element.querySelectorAll('img[src]').forEach((img) => {
+      const src = img.getAttribute('src') || '';
+      if (/bat\.bing\.com|doubleclick\.net|facebook\.com\/tr|google-analytics\.com|googleadservices\.com/.test(src)) {
+        const p = img.closest('p') || img;
+        p.remove();
+      }
+    });
+
+    // Drop decorative/broken images that carry no content value: an empty alt
+    // plus a non-fetchable src (blob:/data: placeholder). On the recipe listing
+    // page the source's decorative circular brand illustration above the H1 has
+    // alt="" and imports as an unresolved blob: URL — it is purely decorative and
+    // should not be authored. Real content images keep a fetchable http(s) src.
+    element.querySelectorAll('img').forEach((img) => {
+      const src = img.getAttribute('src') || '';
+      const alt = (img.getAttribute('alt') || '').trim();
+      if (!alt && /^(blob:|data:)/.test(src)) {
+        const wrap = img.closest('picture') || img;
+        const p = wrap.closest('p');
+        (p && p.textContent.trim() === '' ? p : wrap).remove();
+      }
+    });
 
     // Attribute cleanup: strip event handlers and analytics/tracking hooks that
     // are meaningless in authored content. Only removes attributes that exist in

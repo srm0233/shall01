@@ -293,3 +293,87 @@ header .nav-wrapper.scrolled {
     transition: none;
   }
 }
+
+/* ==========================================================================
+   Recipe listing pages (e.g. /recipes/diet/pescatarian) — title band and
+   sub-category filter pills. Scoped to a cards section that also contains a
+   default-content link list (the filter row) — a shape unique to recipe
+   listing pages, so homepage cards sections (which have no such list) are
+   unaffected. Matches albertsons.com: compact left-aligned title plus a
+   horizontal row of rounded outline filter pills.
+   ========================================================================== */
+
+/* Only recipe-listing cards sections carry a default-content link list. */
+main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a) {
+  --recipe-listing: 1;
+}
+
+/* Title band: brand heading, tighter than the global h1 default. */
+main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+  .default-content-wrapper h1 {
+  font-size: var(--heading-size-xl, 36px);
+  font-weight: 700;
+  color: var(--brand-ink, #2a2928);
+  margin: var(--space-m, 16px) 0 var(--space-l, 24px);
+}
+
+/* Decorative brand illustration (kept small, sits above/left of the title). */
+main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+  .default-content-wrapper p:has(> picture) {
+  margin: 0;
+}
+
+main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+  .default-content-wrapper p > picture img {
+  width: auto;
+  max-height: 40px;
+}
+
+/* Sub-category filter pills: the authored link list rendered as a horizontal
+   pill row. Reset the ordered/unordered list chrome first. */
+main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+  .default-content-wrapper :is(ol, ul) {
+  list-style: none;
+  margin: 0 0 var(--space-l, 24px);
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s, 8px);
+}
+
+main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+  .default-content-wrapper :is(ol, ul) li {
+  margin: 0;
+  padding: 0;
+}
+
+main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+  .default-content-wrapper :is(ol, ul) li a:any-link {
+  display: inline-block;
+  padding: 6px 16px;
+  border: 1px solid var(--brand-border, #e2e2e2);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--brand-ink, #2a2928);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s, 14px);
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+  .default-content-wrapper :is(ol, ul) li a:any-link:hover {
+  border-color: var(--brand-ink, #2a2928);
+  background: var(--brand-grey-bg, #faf9f8);
+}
+
+/* First pill ("All") reads as the active filter on this page. */
+main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+  .default-content-wrapper :is(ol, ul) li:first-child a:any-link {
+  background: var(--brand-ink, #2a2928);
+  border-color: var(--brand-ink, #2a2928);
+  color: #fff;
+}

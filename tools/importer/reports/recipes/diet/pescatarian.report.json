@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "url": "https://www.albertsons.com/recipes/diet/pescatarian",
+  "path": "recipes/diet/pescatarian",
+  "timestamp": "2026-09-15T15:16:23.398Z",
+  "title": "Pescatarian recipes - Shop for easy pescatarian meals | Albertsons",
+  "template": "recipe-diet-listing",
+  "blocks": [
+    "cards-recipe-grid"
+  ]
+}

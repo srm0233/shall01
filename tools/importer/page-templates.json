@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "projectType": "xwalk"
+    "projectType": "da"
   },
   "templates": [
     {
@@ -48,6 +48,40 @@
             "cards-product"
           ],
           "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "recipe-diet-listing",
+      "urls": [
+        "https://www.albertsons.com/recipes/diet/pescatarian"
+      ],
+      "representativeUrl": "https://www.albertsons.com/recipes/diet/pescatarian",
+      "coverageGaps": [],
+      "description": "Albertsons recipe listing page filtered by diet (pescatarian): intro/hero heading with descriptive copy, a grid of recipe cards (image, title, meta), and supporting editorial sections. First of a batch of recipe diet/category listing pages.",
+      "blocks": [
+        {
+          "name": "cards-recipe-grid",
+          "instances": [
+            "div.-tw-ml-\\[6px\\].tw-mb-16"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1-listing",
+          "name": "Recipe listing",
+          "selector": [
+            "h1.css-r0iqig"
+          ],
+          "style": null,
+          "blocks": [
+            "cards"
+          ],
+          "defaultContent": [
+            "h1.css-r0iqig",
+            "nav.css-19uk66z"
+          ]
         }
       ]
     }

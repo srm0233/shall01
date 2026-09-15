@@ -1231,3 +1231,131 @@
 
 .cards.coupon .cards-coupon-nav-prev::after { transform: translateX(2px) rotate(-135deg); }
 .cards.coupon .cards-coupon-nav-next::after { transform: translateX(-2px) rotate(45deg); }
+
+/* ==========================================================================
+   Cards (Recipe Grid) — static responsive listing grid of recipe cards
+   (e.g. /recipes/diet/pescatarian). NOT a carousel: cards wrap onto multiple
+   rows. Matches albertsons.com: compact image-forward tiles, small dark
+   3-line title, muted meta line (prep time / calories).
+   ========================================================================== */
+
+.cards.recipe-grid {
+  max-width: none;
+  padding: 0;
+}
+
+.cards.recipe-grid .cards-recipe-grid-header {
+  margin-bottom: var(--space-m, 16px);
+  font-family: var(--heading-font-family);
+  font-weight: 700;
+  color: var(--brand-ink, #2a2928);
+}
+
+.cards.recipe-grid .cards-recipe-grid-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-l, 24px) var(--space-m, 16px);
+}
+
+.cards.recipe-grid .cards-recipe-grid-card {
+  margin: 0;
+  border: none;
+  background: none;
+}
+
+.cards.recipe-grid .cards-recipe-grid-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s, 8px);
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.cards.recipe-grid .cards-recipe-grid-image {
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--brand-grey-bg, #faf9f8);
+}
+
+.cards.recipe-grid .cards-recipe-grid-image :is(img, picture) {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.cards.recipe-grid .cards-recipe-grid-link:hover .cards-recipe-grid-image img {
+  transform: scale(1.03);
+}
+
+.cards.recipe-grid .cards-recipe-grid-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs, 4px);
+}
+
+.cards.recipe-grid .cards-recipe-grid-title {
+  margin: 0;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s, 14px);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--brand-ink, #2a2928);
+
+  /* clamp long recipe names to 3 lines, matching the source tiles */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cards.recipe-grid .cards-recipe-grid-link:hover .cards-recipe-grid-title {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cards.recipe-grid .cards-recipe-grid-meta {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s, 8px);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs, 12px);
+  color: #6b6a68;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.cards.recipe-grid .cards-recipe-grid-meta li {
+  display: inline-flex;
+  align-items: center;
+}
+
+.cards.recipe-grid .cards-recipe-grid-meta li + li::before {
+  content: '·';
+  margin-right: var(--space-s, 8px);
+}
+
+@media (width >= 600px) {
+  .cards.recipe-grid .cards-recipe-grid-track {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (width >= 900px) {
+  .cards.recipe-grid .cards-recipe-grid-track {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (width >= 1200px) {
+  .cards.recipe-grid .cards-recipe-grid-track {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
