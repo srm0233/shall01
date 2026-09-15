@@ -762,6 +762,52 @@ function decorateCoupon(block) {
 }
 
 /**
+ * Build a performance-tuned thumbnail <picture> for a recipe-grid card.
+ * The grid cell renders small (≈190px at desktop, up to ~290px on mobile), so
+ * request card-sized renditions instead of the default 750/2000 breakpoints:
+ *   - AEM media images (imported/authored, `./media_*` or same-origin) are
+ *     rebuilt via createOptimizedPicture with small widths (400 desktop / 300
+ *     mobile) → responsive WebP <picture> sized for the cell.
+ *   - External CDN images (e.g. mealime, used only in local preview before DA
+ *     ingests them) get their Cloudflare Image Resizing width rewritten to 400.
+ * All cards get explicit 400x400 dims (kills CLS in the aspect-ratio 1/1 cell),
+ * async decoding, and eager loading for the first row (LCP), lazy for the rest.
+ * @param {Element} imgField cell holding the source picture/img/anchor
+ * @param {string} alt image alt text (recipe title)
+ * @param {boolean} eager whether to eager-load (first row) vs lazy
+ * @returns {Element|null} a <picture> (or <img>) ready to append, or null
+ */
+function buildRecipeGridPicture(imgField, alt, eager) {
+  const raw = pictureFrom(imgField, alt, 400);
+  if (!raw) return null;
+  const srcImg = raw.tagName === 'IMG' ? raw : raw.querySelector('img');
+  const src = srcImg ? srcImg.getAttribute('src') || '' : '';
+
+  let pic = raw;
+  const isExternalCdn = /^https?:\/\//.test(src) && !src.includes(window.location.host);
+  if (src && !isExternalCdn) {
+    // AEM media — rebuild with small, cell-appropriate breakpoints.
+    pic = createOptimizedPicture(src, alt, eager, [
+      { media: '(min-width: 600px)', width: '400' },
+      { width: '300' },
+    ]);
+  } else if (srcImg) {
+    // External CDN (mealime Cloudflare Image Resizing) — downsize in place.
+    const resized = src.replace(/(\/cdn-cgi\/image\/)[^/]*(\/)/, '$1width=400,quality=75$2');
+    if (resized !== src) srcImg.setAttribute('src', resized);
+  }
+
+  const img = pic.tagName === 'IMG' ? pic : pic.querySelector('img');
+  if (img) {
+    img.setAttribute('loading', eager ? 'eager' : 'lazy');
+    img.setAttribute('decoding', 'async');
+    img.setAttribute('width', '400');
+    img.setAttribute('height', '400');
+  }
+  return pic;
+}
+
+/**
  * Decorate the "recipe-grid" variant: Albertsons recipe-listing grid (e.g.
  * /recipes/diet/pescatarian). A static, multi-row responsive GRID of recipe
  * cards — NOT a carousel. Each card is a thumbnail photo, a title link to the
@@ -818,25 +864,9 @@ function decorateRecipeGrid(block) {
     const link = createTag('a', { class: 'cards-recipe-grid-link', href });
 
     const imageWrap = createTag('div', { class: 'cards-recipe-grid-image' });
-    const pic = pictureFrom(imgField, title, 400);
-    if (pic) {
-      // Performance: these are external CDN thumbnails rendered in a small grid
-      // cell. Downsize the request (mealime uses Cloudflare Image Resizing:
-      // /cdn-cgi/image/width=NNNN,quality=NN/ — rewrite to a card-sized width),
-      // lazy-load the below-fold cards, and pin intrinsic width/height so the
-      // square (aspect-ratio: 1/1) cell reserves space and doesn't shift (CLS).
-      const gridImg = pic.tagName === 'IMG' ? pic : pic.querySelector('img');
-      if (gridImg) {
-        const s = gridImg.getAttribute('src') || '';
-        const resized = s.replace(/(\/cdn-cgi\/image\/)[^/]*(\/)/, '$1width=400,quality=75$2');
-        if (resized !== s) gridImg.setAttribute('src', resized);
-        gridImg.setAttribute('loading', index < EAGER_CARDS ? 'eager' : 'lazy');
-        gridImg.setAttribute('decoding', 'async');
-        gridImg.setAttribute('width', '400');
-        gridImg.setAttribute('height', '400');
-      }
-      imageWrap.append(pic);
-    }
+    const eager = index < EAGER_CARDS;
+    const pic = buildRecipeGridPicture(imgField, title, eager);
+    if (pic) imageWrap.append(pic);
     link.append(imageWrap);
 
     const body = createTag('div', { class: 'cards-recipe-grid-body' });
