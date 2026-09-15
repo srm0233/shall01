@@ -774,7 +774,10 @@ function decorateRecipeGrid(block) {
   const headingRow = takeHeadingRow(rows);
 
   const ul = createTag('ul', { class: 'cards-recipe-grid-track' });
-  rows.forEach((row) => {
+  // Eager-load the first row (LCP candidates, above the fold); lazy-load the
+  // rest. Desktop shows 6 columns, so the first 6 cards cover the first row.
+  const EAGER_CARDS = 6;
+  rows.forEach((row, index) => {
     // Flatten the row's cells into a flat list of field elements.
     const fields = [];
     [...row.children].forEach((cell) => {
@@ -816,7 +819,24 @@ function decorateRecipeGrid(block) {
 
     const imageWrap = createTag('div', { class: 'cards-recipe-grid-image' });
     const pic = pictureFrom(imgField, title, 400);
-    if (pic) imageWrap.append(pic);
+    if (pic) {
+      // Performance: these are external CDN thumbnails rendered in a small grid
+      // cell. Downsize the request (mealime uses Cloudflare Image Resizing:
+      // /cdn-cgi/image/width=NNNN,quality=NN/ — rewrite to a card-sized width),
+      // lazy-load the below-fold cards, and pin intrinsic width/height so the
+      // square (aspect-ratio: 1/1) cell reserves space and doesn't shift (CLS).
+      const gridImg = pic.tagName === 'IMG' ? pic : pic.querySelector('img');
+      if (gridImg) {
+        const s = gridImg.getAttribute('src') || '';
+        const resized = s.replace(/(\/cdn-cgi\/image\/)[^/]*(\/)/, '$1width=400,quality=75$2');
+        if (resized !== s) gridImg.setAttribute('src', resized);
+        gridImg.setAttribute('loading', index < EAGER_CARDS ? 'eager' : 'lazy');
+        gridImg.setAttribute('decoding', 'async');
+        gridImg.setAttribute('width', '400');
+        gridImg.setAttribute('height', '400');
+      }
+      imageWrap.append(pic);
+    }
     link.append(imageWrap);
 
     const body = createTag('div', { class: 'cards-recipe-grid-body' });
