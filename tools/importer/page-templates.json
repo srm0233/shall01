@@ -54,7 +54,9 @@
     {
       "name": "recipe-diet-listing",
       "urls": [
-        "https://www.albertsons.com/recipes/diet/pescatarian"
+        "https://www.albertsons.com/recipes/diet/pescatarian",
+        "https://www.albertsons.com/recipes/diet/vegetarian",
+        "https://www.albertsons.com/recipes/diet/keto-friendly"
       ],
       "representativeUrl": "https://www.albertsons.com/recipes/diet/pescatarian",
       "coverageGaps": [],
