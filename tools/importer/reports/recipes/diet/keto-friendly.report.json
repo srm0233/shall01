@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "url": "https://www.albertsons.com/recipes/diet/keto-friendly",
+  "path": "recipes/diet/keto-friendly",
+  "timestamp": "2026-09-15T16:47:15.103Z",
+  "title": "Keto-friendly recipes - Shop for keto diet friendly meals | Albertsons",
+  "template": "recipe-diet-listing",
+  "blocks": [
+    "cards-recipe-grid"
+  ]
+}

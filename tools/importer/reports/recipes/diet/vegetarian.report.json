@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "url": "https://www.albertsons.com/recipes/diet/vegetarian",
+  "path": "recipes/diet/vegetarian",
+  "timestamp": "2026-09-15T16:47:10.760Z",
+  "title": "Vegetarian recipes - Shop for easy vegetarian meals | Albertsons",
+  "template": "recipe-diet-listing",
+  "blocks": [
+    "cards-recipe-grid"
+  ]
+}
