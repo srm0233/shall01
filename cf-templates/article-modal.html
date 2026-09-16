@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Email Campaign</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://main--shall01--srm0233.aem.page/blocks/modal/modal.css" rel="stylesheet" />
+	<link href="https://main--shall01--srm0233.aem.page/blocks/articles/articles.css" rel="stylesheet" />
+	<style>
+		/* Self-contained subset of styles/styles.css: only the tokens and base
+		   typography this template's markup and rich-text content depend on.
+		   Not synced automatically with styles.css — update both if brand tokens change. */
+		:root {
+			color-scheme: light dark;
+
+			--space-xs: 4px;
+			--space-s: 8px;
+			--space-m: 16px;
+			--space-l: 24px;
+			--space-xl: 32px;
+
+			--color-light: rgb(255 255 255);
+			--color-card-dark: #162121;
+			--color-gray-100: #f1f1f1;
+			--color-gray-200: #d3d3d3;
+			--color-gray-700: #494949;
+			--color-gray-800: #313131;
+			--color-parchment: #f5f2ed;
+			--color-obsidian: #060d0d;
+			--color-gold: #c5a059;
+			--color-muted: #8b9a9a;
+			--color-rust: #a14f2b;
+
+			--border-radius-heritage: 24px;
+			--border-heritage: 2px solid light-dark(rgb(161 79 43 / 20%), rgb(245 242 237 / 20%));
+			--shadow-lift-l: 0 30px 60px -12px rgb(0 0 0 / 22%);
+
+			--heading-font-family: "Poppins", "Helvetica Neue", helvetica, arial, sans-serif;
+			--heading-line-height: 1.15;
+			--heading-font-size-xxl: 32.44px;
+			--heading-font-size-xl: 28.83px;
+			--heading-font-size-l: 25.63px;
+			--heading-font-size-m: 22.78px;
+			--heading-font-size-s: 20.25px;
+			--heading-font-size-xs: 18px;
+			--heading-font-size-xxs: 16px;
+
+			--body-font-family: "Nunito Sans", "Helvetica Neue", helvetica, arial, sans-serif;
+			--font-family-mono: "JetBrains Mono", "Courier New", monospace;
+			--body-font-size-m: 16px;
+			--body-font-size-s: 14px;
+			--body-line-height: 1.6;
+			--text-color: #2a2928;
+
+			--brand-blue: #04a;
+			--brand-blue-dark: #036;
+			--brand-border: #e2e2e2;
+			--light-color: #faf9f8;
+			--dark-color: #1f1e1e;
+			--link-color: var(--brand-blue);
+			--link-hover-color: var(--brand-blue-dark);
+		}
+
+		@media (width >= 600px) {
+			:root {
+				--heading-font-size-xxl: 44px;
+				--heading-font-size-xl: 36px;
+			}
+
+			h3 { font-size: var(--heading-font-size-l); }
+			h4 { font-size: var(--heading-font-size-m); }
+			h5 { font-size: var(--heading-font-size-s); }
+		}
+
+		@media (width >= 900px) {
+			:root {
+				--body-font-size-m: 18px;
+				--body-font-size-s: 16px;
+				--heading-font-size-xxl: 64px;
+				--heading-font-size-xl: 48px;
+				--heading-font-size-l: 32px;
+				--heading-font-size-m: 24px;
+			}
+		}
+
+		body {
+			display: block;
+			margin: 0;
+			box-sizing: border-box;
+			background-color: #fff;
+			color: var(--text-color);
+			font-family: var(--body-font-family);
+			font-size: var(--body-font-size-m);
+			line-height: var(--body-line-height);
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+		}
+
+		h1, h2, h3, h4, h5, h6 {
+			margin-top: 0.8em;
+			margin-bottom: 0.4em;
+			font-family: var(--heading-font-family);
+			font-weight: 500;
+			line-height: var(--heading-line-height);
+			scroll-margin: 40px;
+		}
+
+		h1 { font-size: var(--heading-font-size-xxl); letter-spacing: -0.02em; }
+		h2 { font-size: var(--heading-font-size-xl); letter-spacing: -0.015em; }
+		h3 { font-size: var(--heading-font-size-m); }
+		h4 { font-size: var(--heading-font-size-s); }
+		h5 { font-size: var(--heading-font-size-xs); }
+		h6 { font-size: var(--heading-font-size-xxs); }
+
+		p, dl, ol, ul, pre, blockquote {
+			margin-top: 0.8em;
+			margin-bottom: 0.25em;
+		}
+
+		main ul, main ol { padding-inline-start: var(--space-l); }
+
+		main ul ul, main ul ol, main ol ul, main ol ol {
+			padding-inline-start: var(--space-m);
+		}
+
+		code, pre {
+			font-family: var(--font-family-mono);
+			font-size: var(--body-font-size-s);
+		}
+
+		:not(pre) > code {
+			padding: 0.1em 0.35em;
+			background: rgb(161 79 43 / 10%);
+			border-radius: 4px;
+			color: var(--color-rust);
+		}
+
+		pre {
+			padding: var(--space-l);
+			border-radius: var(--space-s);
+			background-color: var(--light-color);
+			overflow-x: auto;
+			white-space: pre;
+		}
+
+		strong { font-weight: 600; }
+
+		a:any-link {
+			color: var(--link-color);
+			text-decoration: underline;
+			text-decoration-thickness: 1px;
+			text-underline-offset: 0.2em;
+			text-decoration-color: light-dark(rgb(26 26 26 / 30%), rgb(245 242 237 / 30%));
+			overflow-wrap: break-word;
+		}
+
+		a:hover {
+			color: var(--link-hover-color);
+			text-decoration: underline;
+			text-decoration-color: var(--link-hover-color);
+		}
+
+		p.button-container { margin: var(--space-m) 0; }
+
+		a.button:any-link, button.button {
+			box-sizing: border-box;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: var(--space-xs);
+			max-width: 100%;
+			margin: 0;
+			border: 1.5px solid var(--brand-blue);
+			border-radius: 24px;
+			padding: 11px 28px;
+			font: inherit;
+			font-family: var(--body-font-family);
+			font-weight: 700;
+			font-size: var(--body-font-size-m);
+			line-height: 1.2;
+			text-align: center;
+			text-decoration: none;
+			background-color: var(--brand-blue);
+			color: var(--color-light);
+			cursor: pointer;
+			overflow: hidden;
+			position: relative;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+		}
+
+		input, textarea, select, button { font: inherit; }
+
+		a.button:any-link:hover,
+		a.button:any-link:focus-visible,
+		button.button:hover,
+		button.button:focus-visible {
+			background-color: var(--brand-blue-dark);
+			border-color: var(--brand-blue-dark);
+			color: var(--color-light);
+			cursor: pointer;
+			text-decoration: none;
+		}
+
+		a.button:any-link:focus-visible, button.button:focus-visible {
+			outline: 2px solid var(--brand-blue);
+			outline-offset: 2px;
+		}
+
+		a.button[aria-disabled='true'],
+		a.button[aria-disabled='true']:hover,
+		a.button[aria-disabled='true']:focus-visible,
+		button.button:disabled,
+		button.button:disabled:hover,
+		button.button:disabled:focus-visible {
+			background-color: var(--light-color);
+			border-color: var(--brand-border);
+			color: var(--dark-color);
+			cursor: not-allowed;
+			pointer-events: none;
+		}
+
+		a.button.secondary, button.button.secondary {
+			border: 1.5px solid var(--brand-blue);
+			background-color: transparent;
+			color: var(--brand-blue);
+		}
+
+		a.button.secondary:hover,
+		a.button.secondary:focus-visible,
+		button.button.secondary:hover,
+		button.button.secondary:focus-visible {
+			border-color: var(--brand-blue-dark);
+			background-color: rgb(0 68 136 / 6%);
+			color: var(--brand-blue-dark);
+		}
+
+		main img {
+			max-width: 100%;
+			width: auto;
+			height: auto;
+		}
+
+		main img:not([width], [height]) {
+			aspect-ratio: 16 / 9;
+			object-fit: cover;
+		}
+	</style>
+</head>
+<body>
+	<div class="modal">
+		<div class="modal-backdrop" aria-hidden="true"></div>
+		<div class="modal-dialog" role="dialog" aria-modal="true" aria-label="The Magic of Espresso"><button
+				type="button" class="modal-close" aria-label="Close dialog">×</button>
+			<div class="modal-content">
+				<main class="modal-main articles-modal">
+					<div class="articles-modal-image">{{{asset fields.featuredImage}}}</div>
+					<h2 class="articles-modal-title">{{{fields.title}}}</h2>
+					<div class="articles-card-meta"><span class="articles-card-author">By {{{fields.author}}}</span><time
+							class="articles-card-date" datetime="{{{fields.date}}}">{{{fields.date}}}</time></div>
+					<div class="articles-modal-body">
+						{{{fields.content}}}
+					</div>
+				</main>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
