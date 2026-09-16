@@ -88,6 +88,7 @@
 
 .articles .articles-card-date {
   font-weight: 700;
+  display: block;
 }
 
 /* Separator only when an author precedes the date */
@@ -146,6 +147,10 @@
 
 .modal .articles-modal .articles-modal-title {
   margin-top: 0;
+}
+
+.modal .articles-modal .articles-card-date {
+  display: block;
 }
 
 .modal .articles-modal .articles-card-meta {
