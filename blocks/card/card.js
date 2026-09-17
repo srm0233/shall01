@@ -5,6 +5,42 @@ import { moveInstrumentation } from '../../ue/scripts/ue-utils.js';
 const EAGER_CARDS = 6; // first desktop row — eager-load for LCP, lazy-load the rest
 
 /**
+ * Slugify a recipe title into a stable, URL/id-safe token.
+ * e.g. `Easy Cacio e Pepe with Whole Grain Pasta` → `easy-cacio-e-pepe-with-whole-grain-pasta`
+ * @param {string} s
+ * @returns {string}
+ */
+function slugify(s) {
+  return (s || '')
+    .toLowerCase()
+    .replace(/&amp;|&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60);
+}
+
+/**
+ * Derive a stable, unique id for a recipe card so its sequence can be changed
+ * agentically/programmatically by referencing the card rather than fuzzy title
+ * matching. Two identifiers are applied to the card element:
+ *   - `data-recipe-id`: the durable RECIPE token from the recipe href (survives
+ *     title edits) — the canonical key for reordering.
+ *   - `id`: a human-readable `recipe-<title-slug>` anchor (nice for prompts and
+ *     deep links). Falls back to the recipe token, then a positional index.
+ * @param {string} href recipe detail link
+ * @param {string} title recipe title
+ * @param {number} index positional fallback
+ * @returns {{recipeId: string, domId: string}}
+ */
+function deriveCardId(href, title, index) {
+  const tokenMatch = (href || '').match(/\/shop\/(RECIPE[A-Z0-9]+)/i);
+  const recipeId = tokenMatch ? tokenMatch[1] : (slugify(title) || `card-${index + 1}`);
+  const slug = slugify(title);
+  const domId = slug ? `recipe-${slug}` : `recipe-${recipeId.toLowerCase()}`;
+  return { recipeId, domId };
+}
+
+/**
  * Build a performance-tuned thumbnail <picture> for a recipe card.
  * The card renders small (≈190px desktop, up to ~290px mobile), so request
  * card-sized renditions instead of the default 750/2000 breakpoints:
@@ -140,4 +176,12 @@ export default function decorate(block) {
   if (firstRow) moveInstrumentation(firstRow, link);
 
   block.replaceChildren(link);
+
+  // Assign a stable, unique id so this card's sequence can be changed
+  // agentically by referencing the card (not fuzzy title matching). Only set
+  // `id` if not already present, so an author-authored anchor wins.
+  const cardIndex = siblings.indexOf(block);
+  const { recipeId, domId } = deriveCardId(href, title, cardIndex < 0 ? 0 : cardIndex);
+  block.dataset.recipeId = recipeId;
+  if (!block.id) block.id = domId;
 }
