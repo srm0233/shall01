@@ -304,7 +304,7 @@ header .nav-wrapper.scrolled {
    ========================================================================== */
 
 /* Only recipe-listing cards sections carry a default-content link list. */
-main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a) {
+main .section:is(.cards-container, .card-container):has(.default-content-wrapper :is(ol, ul) a) {
   --recipe-listing: 1;
 }
 
@@ -313,13 +313,13 @@ main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a) {
    grid down (measured ~0.18 layout shift). Reserve its vertical space so the
    grid position is stable from first paint. min-height ≈ h1 + margins + one
    pill row; content taller than this (rare 2-line wrap) still grows gracefully. */
-main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+main .section:is(.cards-container, .card-container):has(.default-content-wrapper :is(ol, ul) a)
   .default-content-wrapper:first-child {
   min-height: 140px;
 }
 
 /* Title band: brand heading, tighter than the global h1 default. */
-main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+main .section:is(.cards-container, .card-container):has(.default-content-wrapper :is(ol, ul) a)
   .default-content-wrapper h1 {
   font-size: var(--heading-size-xl, 36px);
   font-weight: 700;
@@ -328,12 +328,12 @@ main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
 }
 
 /* Decorative brand illustration (kept small, sits above/left of the title). */
-main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+main .section:is(.cards-container, .card-container):has(.default-content-wrapper :is(ol, ul) a)
   .default-content-wrapper p:has(> picture) {
   margin: 0;
 }
 
-main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+main .section:is(.cards-container, .card-container):has(.default-content-wrapper :is(ol, ul) a)
   .default-content-wrapper p > picture img {
   width: auto;
   max-height: 40px;
@@ -341,7 +341,7 @@ main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
 
 /* Sub-category filter pills: the authored link list rendered as a horizontal
    pill row. Reset the ordered/unordered list chrome first. */
-main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+main .section:is(.cards-container, .card-container):has(.default-content-wrapper :is(ol, ul) a)
   .default-content-wrapper :is(ol, ul) {
   list-style: none;
   margin: 0 0 var(--space-l, 24px);
@@ -355,13 +355,13 @@ main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
   min-height: 34px;
 }
 
-main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+main .section:is(.cards-container, .card-container):has(.default-content-wrapper :is(ol, ul) a)
   .default-content-wrapper :is(ol, ul) li {
   margin: 0;
   padding: 0;
 }
 
-main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+main .section:is(.cards-container, .card-container):has(.default-content-wrapper :is(ol, ul) a)
   .default-content-wrapper :is(ol, ul) li a:any-link {
   display: inline-block;
   padding: 6px 16px;
@@ -378,16 +378,62 @@ main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+main .section:is(.cards-container, .card-container):has(.default-content-wrapper :is(ol, ul) a)
   .default-content-wrapper :is(ol, ul) li a:any-link:hover {
   border-color: var(--brand-ink, #2a2928);
   background: var(--brand-grey-bg, #faf9f8);
 }
 
 /* First pill ("All") reads as the active filter on this page. */
-main .section.cards-container:has(.default-content-wrapper :is(ol, ul) a)
+main .section:is(.cards-container, .card-container):has(.default-content-wrapper :is(ol, ul) a)
   .default-content-wrapper :is(ol, ul) li:first-child a:any-link {
   background: var(--brand-ink, #2a2928);
   border-color: var(--brand-ink, #2a2928);
   color: #fff;
+}
+
+/* ==========================================================================
+   Recipe listing grid — individual `card` blocks.
+   On the pescatarian page each recipe is its own `card` block, so EDS wraps
+   each in a sibling `.card-wrapper`. Lay those wrappers out as the responsive
+   recipe grid here at the section level (the block itself only styles one card).
+   Only applies to recipe-listing sections (those carrying a filter link list).
+   ========================================================================== */
+main .section.card-container:has(.default-content-wrapper :is(ol, ul) a) {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-l, 24px) var(--space-m, 16px);
+  align-items: start;
+}
+
+/* The title/filter default-content block spans the full grid width (full row). */
+/* stylelint-disable-next-line no-descending-specificity */
+main .section.card-container:has(.default-content-wrapper :is(ol, ul) a)
+  > .default-content-wrapper {
+  grid-column: 1 / -1;
+}
+
+/* Each card wrapper is one grid cell; strip the default section wrapper spacing. */
+main .section.card-container:has(.default-content-wrapper :is(ol, ul) a)
+  > .card-wrapper {
+  margin: 0;
+  max-width: none;
+}
+
+@media (width >= 600px) {
+  main .section.card-container:has(.default-content-wrapper :is(ol, ul) a) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (width >= 900px) {
+  main .section.card-container:has(.default-content-wrapper :is(ol, ul) a) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (width >= 1200px) {
+  main .section.card-container:has(.default-content-wrapper :is(ol, ul) a) {
+    grid-template-columns: repeat(6, 1fr);
+  }
 }

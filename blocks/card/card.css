@@ -1,0 +1,85 @@
+/* ==========================================================================
+   Card — a single recipe card (image + title + prep-time/calorie meta).
+   Each card is its own block; the grid layout that arranges sibling cards is
+   applied at the section level (see styles/lazy-styles.css, .card-container).
+   Structural + brand styling; matches the recipe-grid look on albertsons.com.
+   ========================================================================== */
+
+.card.block {
+  margin: 0;
+}
+
+.card .card-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s, 8px);
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card .card-image {
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--brand-grey-bg, #faf9f8);
+}
+
+.card .card-image :is(img, picture) {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.card .card-link:hover .card-image img {
+  transform: scale(1.03);
+}
+
+.card .card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs, 4px);
+}
+
+.card .card-title {
+  margin: 0;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s, 14px);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--brand-ink, #2a2928);
+
+  /* clamp long recipe names to 3 lines, matching the source tiles */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card .card-link:hover .card-title {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.card .card-meta {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s, 8px);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs, 12px);
+  color: #6b6a68;
+}
+
+.card .card-meta li {
+  display: inline-flex;
+  align-items: center;
+}
+
+.card .card-meta li + li::before {
+  content: '·';
+  margin-right: var(--space-s, 8px);
+}
